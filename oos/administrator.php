@@ -15,6 +15,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Administrator</title>
 </head>
+<?php
+	include ("PHPconnectionDB.php");        
+	//establish connection
+	$conn=connect();
+?>
 <body>
 	<h1>Administrator Page</h1>
 	<button onclick="location.href = 'logout.php';">Logout</button>
@@ -50,9 +55,9 @@
 				Data Curator</input> <input type="radio" name="roles" value="s">
 				Scientist</input> <br /> <br />
 				<button type="reset">Reset</button>
-				<input type="submit" name="submit" value="submit">
+				<input type="submit" name="submit_user" value="Submit">
 			</fieldset>
-		</form>
+		</form>		
 		<form action="" method="post">
 			<fieldset>
 				<legend>New Person Information:</legend>
@@ -62,7 +67,7 @@
 				<br /> Email: <input type="text" name="email"> <br /> <br />
 				Phone: <input type="text" name="phone"> <br /> <br />
 				<button type="reset">Reset</button>
-				<input type="submit" name="submit" value="Submit">
+				<input type="submit" name="submit_person" value="Submit">
 			</fieldset>
 		</form>
 	</div>
@@ -71,5 +76,30 @@
 	<div id="del_user_btn">Delete User</div>
 	<div id="del_user_panel">Delete user</div>
 	<br />
+	
+	<span style="color:green">
+	<?php
+		if (isset($_POST["submit_person"])){
+			$firstname=$_POST['firstname'];
+			$lastname=$_POST['lastname'];
+			$address=$_POST['address'];
+			$email=$_POST['email'];
+			$phone=$_POST['phone'];
+			$person_id=rand(10000000, 99999999);
+			$_SESSION['person_id'] = $person_id;
+			$sql = "INSERT INTO persons VALUES (".$person_id.", '".$firstname."', '".$lastname."', '".$address."', '".$email."', '".$phone."')";
+			$stid = oci_parse($conn, $sql );
+			$res=oci_execute($stid);
+			echo 'New person is added.';
+			
+			// Free the statement identifier when closing the connection
+			oci_free_statement($stid);
+			oci_close($conn);
+		}
+		
+
+	?>
+	</span>
+		
 </body>
 </html>
