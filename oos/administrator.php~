@@ -88,7 +88,6 @@
 			$person_id=rand(10000000, 99999999);
 			$_SESSION['person_id'] = $person_id;
 			$sql = "INSERT INTO persons VALUES (".$person_id.", '".$firstname."', '".$lastname."', '".$address."', '".$email."', '".$phone."')";
-			$sql = "commit";		
 			$stid = oci_parse($conn, $sql );
 			$res=oci_execute($stid);
 			echo 'New person is added.';
