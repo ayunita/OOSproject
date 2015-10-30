@@ -1,0 +1,12 @@
+#add_user_panel, #edit_user_panel, #del_user_panel, #add_sensor_panel, #del_sensor_panel,
+#upload_audio_panel, #upload_images_panel, #upload_scalar_panel {
+	padding: 5px;
+	border: solid 1px;
+	display: none;
+}
+
+#add_user_btn, #edit_user_btn, #del_user_btn, #add_sensor_btn, #del_sensor_btn,
+#upload_audio_btn, #upload_images_btn, #upload_scalar_btn {
+	padding: 5px;
+	border: solid 1px;
+}
