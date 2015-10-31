@@ -108,7 +108,6 @@
 			$person_id=rand(1000, 9999);
 			$_SESSION['person_id'] = $person_id;
 			$sql = "INSERT INTO persons VALUES (".$person_id.", '".$firstname."', '".$lastname."', '".$address."', '".$email."', '".$phone."')";
-			$sql = "commit";		
 			$stid = oci_parse($conn, $sql );
 			$res=oci_execute($stid);
 			
