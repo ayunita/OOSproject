@@ -1,9 +1,0 @@
-<?php
-	session_start();
-	if($_SESSION['role'] != 's'{
-		header("Location: restriction.html");
-		exit();
-	}
-	
-?>
-
