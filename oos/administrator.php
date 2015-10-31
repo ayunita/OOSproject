@@ -80,7 +80,9 @@
 		</form>
 	</div>
 	<div id="edit_user_btn">Manage User</div>
-	<div id="edit_user_panel">Edit user</div>
+	<div id="edit_user_panel">
+		Do search by person id then edit user or person, person id cannot be changed!
+	</div>
 	<div id="del_user_btn">Delete User</div>
 	<div id="del_user_panel">
 		<form action="" method="post">
@@ -90,7 +92,7 @@
 		</form>
 		<form action="" method="post">
 			<b>Delete person</b><br />
-			(Deleting a person will also delete the user corresponding to this id) <br />
+			(Deleting a person will also delete the user and data corresponding to this id) <br />
 			Person id: <input type="text" name="del_person">
 			<input type="submit" name="delete_person" value="Delete">
 		</form>
@@ -166,6 +168,79 @@
 			oci_free_statement($stid);
 			oci_close($conn);
 		}
+		
+		if (isset($_POST["delete_person"])){
+			$del_person=$_POST['del_person'];
+			$sql = "SELECT * FROM users WHERE person_id=".$del_person." AND role='s'";
+			$stid = oci_parse($conn, $sql );
+			$res=oci_execute($stid);
+			
+			$isScientist = false;
+			while(oci_fetch($stid)){
+				$isScientist=true;
+			}
+			
+			if($isScientist == true){
+				$sql2 = "DELETE FROM subscriptions WHERE person_id=".$del_person;
+				$stid = oci_parse($conn, $sql2 );
+				$res=oci_execute($stid);
+				echo 'Subscriptions is deleted.<br />';
+			}
+
+			$sql3 = "DELETE FROM users WHERE person_id=".$del_person;
+			$stid = oci_parse($conn, $sql3 );
+			$res=oci_execute($stid);
+			
+			echo 'User is deleted.<br />';
+			
+			$sql4 = "DELETE FROM persons WHERE person_id=".$del_person;
+			$stid = oci_parse($conn, $sql4 );
+			$res=oci_execute($stid);
+			
+			echo "Person ".$del_person." is deleted.";
+
+			// Free the statement identifier when closing the connection
+			oci_free_statement($stid);
+			oci_close($conn);
+		}
+		
+		if (isset($_POST["delete_sensor"])){
+			$del_sensor=$_POST['del_sensor'];
+			$sql = "SELECT * FROM sensors WHERE sensor_id=".$del_sensor;
+			$stid = oci_parse($conn, $sql );
+			$res=oci_execute($stid);
+
+			while(oci_fetch($stid)){
+				$del_type=oci_result($stid, 'SENSOR_TYPE');
+			}
+			
+			if($del_type=='a'){
+					$sql = "DELETE FROM audio_recordings WHERE sensor_id=".$del_sensor;
+					$stid = oci_parse($conn, $sql );
+					$res=oci_execute($stid);
+					echo 'Audio recording is deleted.<br />';
+			} else if($del_type=='i'){
+					$sql = "DELETE FROM images WHERE sensor_id=".$del_sensor;
+					$stid = oci_parse($conn, $sql );
+					$res=oci_execute($stid);
+					echo 'Image is deleted.<br />';
+			} else {
+					$sql = "DELETE FROM scalar_data WHERE sensor_id=".$del_sensor;
+					$stid = oci_parse($conn, $sql );
+					$res=oci_execute($stid);
+					echo 'Scalar data is deleted.<br />';
+			}
+
+			$sql = "DELETE FROM sensors WHERE sensor_id=".$del_sensor;
+			$stid = oci_parse($conn, $sql );
+			$res=oci_execute($stid);
+			echo 'Sensor '.$del_sensor.' is deleted.<br />';
+
+			// Free the statement identifier when closing the connection
+			oci_free_statement($stid);
+			oci_close($conn);
+		}
+		
 		
 		
 	?>
