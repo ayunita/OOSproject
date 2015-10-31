@@ -36,26 +36,18 @@
 				Description: <input type="text" name="description"> <br />
 				<br />
 				<button type="reset">Reset</button>
-				<input type="submit" name="submit_sensor" value="Submit">
+				<input type="submit" name="submit" value="Submit">
 			</fieldset>
 		</form>
 	</div>
 	<div id="del_sensor_btn">Delete Sensor</div>
-	<div id="del_sensor_panel">
-	<form action="" method="post">
-			<b>Delete sensor</b><br />
-			(Deleting a sensor will also delete data corresponding to this sensor) <br />
-			Sensor id: <input type="text" name="del_sensor">
-			<input type="submit" name="delete_sensor" value="Delete">
-	</form>
-	</div>
+	<div id="del_sensor_panel">Delete sensor</div>
 	<h2>User Management</h2>
 	<div id="add_user_btn">Add New User</div>
 	<div id="add_user_panel">
 		<form action="" method="post">
 			<fieldset>
 				<legend>New User Information:</legend>
-				Person id: <input type="text" name="user_id"> <br /> <br />
 				Username: <input type="text" name="username"> <br /> <br />
 				Password: <input type="text" name="password"> <br /> <br />
 				Role: <input type="radio" name="roles" value="a">
@@ -82,19 +74,7 @@
 	<div id="edit_user_btn">Manage User</div>
 	<div id="edit_user_panel">Edit user</div>
 	<div id="del_user_btn">Delete User</div>
-	<div id="del_user_panel">
-		<form action="" method="post">
-			<b>Delete user</b><br />
-			Username: <input type="text" name="del_username">
-			<input type="submit" name="delete_user" value="Delete">
-		</form>
-		<form action="" method="post">
-			<b>Delete person</b><br />
-			(Deleting a person will also delete the user corresponding to this id) <br />
-			Person id: <input type="text" name="del_person">
-			<input type="submit" name="delete_person" value="Delete">
-		</form>
-	</div>
+	<div id="del_user_panel">Delete user</div>
 	<br />
 	
 	<span style="color:green">
@@ -105,70 +85,19 @@
 			$address=$_POST['address'];
 			$email=$_POST['email'];
 			$phone=$_POST['phone'];
-			$person_id=rand(1000, 9999);
+			$person_id=rand(10000000, 99999999);
 			$_SESSION['person_id'] = $person_id;
 			$sql = "INSERT INTO persons VALUES (".$person_id.", '".$firstname."', '".$lastname."', '".$address."', '".$email."', '".$phone."')";
-			$sql = "commit";		
 			$stid = oci_parse($conn, $sql );
 			$res=oci_execute($stid);
-			
-			echo 'New person is added.<br />';
-			echo $person_id.", ".$firstname.", ".$lastname.", ".$address.", ".$email.", ".$phone;
+			echo 'New person is added.';
 			
 			// Free the statement identifier when closing the connection
 			oci_free_statement($stid);
 			oci_close($conn);
 		}
 		
-		if (isset($_POST["submit_user"])){
-			$user_id=$_POST['user_id'];
-			$username=$_POST['username'];
-			$password=$_POST['password'];
-			$roles=$_POST['roles'];
-			$date = date("y-m-d");
-			$sql = "INSERT INTO users VALUES ('".$username."', '".$password."', '".$roles."', ".$user_id.", TO_DATE('".$date."', 'YY-MM-DD'))";
-			$stid = oci_parse($conn, $sql );
-			$res=oci_execute($stid);
-			
-			echo 'New user is added.<br />';
-			echo $username.", ".$password.", ".$roles.", ".$user_id.", ".$date;
-			
-			// Free the statement identifier when closing the connection
-			oci_free_statement($stid);
-			oci_close($conn);
-		}
-		
-		if (isset($_POST["submit_sensor"])){
-			$location=$_POST['location'];
-			$types=$_POST['types'];
-			$description=$_POST['description'];
-			$sensor_id=rand(1000, 9999);
-			$sql = "INSERT INTO sensors VALUES (".$sensor_id.", '".$location."', '".$types."', '".$description."')";
-			$stid = oci_parse($conn, $sql );
-			$res=oci_execute($stid);
-			
-			echo 'New sensor is added.<br />';
-			echo $sensor_id.", ".$location.", ".$types.", ".$description;
-			
-			// Free the statement identifier when closing the connection
-			oci_free_statement($stid);
-			oci_close($conn);
-		}
-		
-		if (isset($_POST["delete_user"])){
-			$del_username=$_POST['del_username'];
-			$sql = "DELETE FROM users WHERE user_name='".$del_username."'";
-			$stid = oci_parse($conn, $sql );
-			$res=oci_execute($stid);
-			
-			echo $del_username." is deleted from users.";
-			
-			// Free the statement identifier when closing the connection
-			oci_free_statement($stid);
-			oci_close($conn);
-		}
-		
-		
+
 	?>
 	</span>
 		

@@ -1,0 +1,15 @@
+<?php
+function connect(){
+<<<<<<< HEAD
+	$conn = oci_connect('yunita', 'yenchi12');
+=======
+	$conn = oci_connect('chen1', '117130Abc');
+>>>>>>> 1aaa924d4d45388a8f9b09dde74b28fbf16dcc84
+	if (!$conn) {
+		$e = oci_error();
+		trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+	}
+
+	return $conn;
+}
+?>
