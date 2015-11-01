@@ -21,6 +21,7 @@
 		$stid = oci_parse($conn, $sql );
 		
 		oci_define_by_name($stid, 'ROLE', $role);
+		oci_define_by_name($stid, 'PERSON_ID', $person_id);
 
 		//Execute a statement returned from oci_parse()
 		$res=oci_execute($stid); 
@@ -42,6 +43,7 @@
 		} else {
 			echo 'Login successful...';
 			$_SESSION['role'] = $role;
+			$_SESSION['person_id'] = $person_id;
 			if($role == 'a'){
 				header("Location: administrator.php"); 
 			} else if ($role == 's'){

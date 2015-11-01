@@ -14,7 +14,7 @@
 <head>
 <link rel="stylesheet" type="text/css" href="style.css">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Administrator</title>
+<title>Scientist</title>
 </head>
 <?php
 	include ("PHPconnectionDB.php");        

@@ -28,6 +28,8 @@
 	<button onclick="location.href = 'search.php';">Search Records</button>
 	<br><br>	
 	<button onclick="location.href = 'analysis.php';">Data Analysis</button>
+	<br><br>
+	<button onclick="location.href = 'logout.php';">Logout</button>
 
 
 </body>
