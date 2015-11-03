@@ -173,6 +173,7 @@
 				$stid = oci_parse($conn, $sql );
 				$res = oci_execute($stid);
 				
+				echo "You successfully subscribed SENSOR ".$sub_sensorid;
 				header("Refresh:0");
 			}
 		}
@@ -225,6 +226,7 @@
 				$stid = oci_parse($conn, $sql );
 				$res = oci_execute($stid);
 				
+				echo "You successfully unsubscribed SENSOR ".$unsub_sensorid; 
 				header("Refresh:0");
 			}
 		}
