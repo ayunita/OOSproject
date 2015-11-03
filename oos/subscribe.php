@@ -58,7 +58,7 @@
 	</div>
 
 	<p>All Subscribed Sensors:</p>
-	<div id="sd_sensor_panel"  style="overflow:auto; height:200px;">
+	<div id="sd_sensor_panel"  style="overflow:auto; height:150px;">
 		<form action="" method="post">
 			<fieldset>
 				<?php
@@ -92,7 +92,7 @@
   						echo "<td>".oci_result($stid, 'LOCATION') . "</td>";
 						echo "<td>".oci_result($stid, 'SENSOR_TYPE')."</td>";
 						echo "<td>".oci_result($stid, 'DESCRIPTION')."</td></tr>";
-				}
+					}
 					oci_free_statement($stid);
 				}
 
@@ -110,7 +110,8 @@
 	<div id="s_sensor_panel">
 		<form action="" method="post">
 			<fieldset>
-				
+				Enter Sensor ID: <input type="text" name="sub_sensorid">
+				<input type="submit" name="subscribe_sensor" value="Subscribe">
 
 			</fieldset>
 		</form>
@@ -120,11 +121,118 @@
 	<div id="us_sensor_panel">
 		<form action="" method="post">
 			<fieldset>
-				
+				Enter Sensor ID: <input type="text" name="unsub_sensorid">
+				<input type="submit" name="unsubscribe_sensor" value="Unsubscribe">
 
 			</fieldset>
 		</form>
 	</div>
 
+	<span style="color:green">
+	
+	
+	<?php 
+		if (isset($_POST["subscribe_sensor"])){
+			$row_num = 0;
+			
+			if(strval($_POST['sub_sensorid']) != "") {
+				$sub_sensorid = intval($_POST['sub_sensorid']);
+				$sql = "select * from sensors where SENSOR_ID = ".$sub_sensorid;
+				$stid = oci_parse($conn, $sql );
+				$res = oci_execute($stid);
+			
+				while (oci_fetch($stid)) {
+    				$row_num = $row_num +1;
+				}
+				oci_free_statement($stid);
+			}
+			
+			if ($row_num == 0){
+				echo "PLEASE ENTER VALID SENSOR ID";
+			}
+			
+			$not_exist = true;	
+			
+			// check existence of the subscription
+			$sub_sensorid = intval($_POST['sub_sensorid']);
+			$sql = "select * from subscriptions where SENSOR_ID = ".$sub_sensorid." and PERSON_ID = ".$_SESSION["person_id"];
+			$stid = oci_parse($conn, $sql );
+			$res = oci_execute($stid);
+			while (oci_fetch($stid)) {
+    			$not_exist = false;
+			}
+			oci_free_statement($stid);
+			
+			if(!$not_exist) {
+				echo "SENSOR SUBSCRIPTION ALREADY EXISTS";
+			}
+			
+			if(strval($_POST['sub_sensorid'])  != "" && $row_num != 0 && $not_exist) {
+				$sub_sensorid = intval($_POST['sub_sensorid']);
+				$sql = "Insert into subscriptions values(".$sub_sensorid.",".$_SESSION["person_id"].")";
+				$stid = oci_parse($conn, $sql );
+				$res = oci_execute($stid);
+				
+				echo "You successfully subscribed SENSOR ".$sub_sensorid;
+			}
+		}
+		
+		
+		
+		
+		if (isset($_POST["unsubscribe_sensor"])){
+			$row_num1 = 0;
+			
+			if(strval($_POST['unsub_sensorid']) != "") {
+				$unsub_sensorid = intval($_POST['unsub_sensorid']);
+				$sql = "select * from sensors where SENSOR_ID = ".$unsub_sensorid;
+				$stid = oci_parse($conn, $sql );
+				$res = oci_execute($stid);
+			
+				while (oci_fetch($stid)) {
+    				$row_num1 = $row_num1 +1;
+				}
+				oci_free_statement($stid);
+			}
+			
+			
+			if ($row_num1 == 0){
+				echo "THE SENOSR ID IS INVALID, PLEASE ENTER A VALID ID";
+			}		
+			
+			$exist = false;	
+					
+			// check existence of the subscription
+			if(strval($_POST['unsub_sensorid']) != "") {
+				$sub_sensorid = intval($_POST['unsub_sensorid']);
+				$sql = "select * from subscriptions where SENSOR_ID = ".$unsub_sensorid." and PERSON_ID = ".$_SESSION["person_id"];
+				$stid = oci_parse($conn, $sql );
+				$res = oci_execute($stid);
+				while (oci_fetch($stid)) {
+    				$exist = true;
+				}
+				oci_free_statement($stid);
+			}
+			
+			
+			if($row_num1 != 0 && !$exist) {
+				echo "SENSOR SUBSCRIPTION DOES NOT EXIST";
+			}
+			
+			if(strval($_POST['unsub_sensorid'])  != "" && $row_num1 != 0 && $exist) {
+				$unsub_sensorid = intval($_POST['unsub_sensorid']);
+				$sql = "delete from subscriptions where SENSOR_ID = ".$unsub_sensorid." and "."PERSON_ID = ".$_SESSION["person_id"] ;
+				$stid = oci_parse($conn, $sql );
+				$res = oci_execute($stid);
+				
+				echo "You successfully unsubscribed SENSOR ".$unsub_sensorid;
+			}
+		}
+		
+	?>
+	
+	</span>
+	
+	
 </body>
 </html>
