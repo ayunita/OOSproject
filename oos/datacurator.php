@@ -1,4 +1,3 @@
-<!-- test -->
 <?php
 	session_start();
 	if($_SESSION['role'] != 'd'){
@@ -74,7 +73,6 @@
 		// http://forum.codecall.net/topic/40286-tutorial-storing-images-in-mysql-with-php/
 		// by: Guest_Jordan_*
 		if (isset($_POST["upload_image"])){
-			echo "File Type: \n\n\n\n\n\n";
 			// to insert data into table IMAGES, we need (total 6 variables):
 			// IMAGE_ID, SENSOR_ID, DATE_CREATED, DESCRIPTION, THUMBNAIL, RECORDED_DATA
 			$imageId = rand(1000, 9999);
@@ -94,7 +92,6 @@
 			$data = addslashes($data);
 			fclose($fp);
 			*/
-			
 			/*
 			// http://www.codingcage.com/2014/12/file-upload-and-view-with-php-and-mysql.html
 			$file = rand(1000,100000)."-".$_FILES['file_image']['name'];
@@ -104,6 +101,11 @@
  			$folder="uploads/";
  			move_uploaded_file($file_loc,$folder.$file);
  			*/
+ 			//$data = addslashes(file_get_contents($_FILES['file_image']['name']));
+ 			//$data = addslashes(file_get_contents('/compsci/webdocs/yishuo/beermug.jpg'));
+ 			
+ 			$datatmp=($_FILES['file_image']['name']);
+ 			$data=addslashes (file_get_contents($_FILES['file_image']['tmp_name']));
 			
 			
 			//TO DO: $thumbnail // similar to $data, but to resize it
@@ -111,12 +113,13 @@
 			
 			// insert into the database
 			try {
-				//$sql = "INSERT INTO IMAGES VALUES (".$imageId.", ".$sensorId.", ".$date.", ".strval($description).", ".$data.", ".$data.")";
-				$sql = "INSERT INTO IMAGES VALUES (".$imageId.", ".$sensorId.", '".$date."', '".$description."', ".$imageFilename.", ".$imageFilename.")";
+				$sql = "INSERT INTO IMAGES VALUES (".$imageId.", ".$sensorId.", ".$date.", ".strval($description).", ".$data.", ".$data.")";
+				//$sql = "INSERT INTO IMAGES VALUES (".$imageId.", ".$sensorId.", '".$date."', '".$description."', ".$imageFilename.", ".$imageFilename.")";
+				//$sql = "INSERT INTO IMAGES VALUES (".$imageId.", ".$sensorId.", '".$date."', '".$description."', ".bfilename('/compsci/webdocs/yishuo/web_docs/OOSproject/oos',"beermug.jpg").", ".bfilename('/compsci/webdocs/yishuo/web_docs/OOSproject/oos',"beermug.jpg")")";
 				echo "INSERT INTO IMAGES VALUES (".$imageId.", ".$sensorId.", ".$date.", '".$description."', "."NULL".", "."NULL".")";
 				//$sql = "INSERT INTO IMAGES VALUES (".$imageId.", '".$sensorId."', '".$date."', '".$description."', '".$_POST['file_image']."', '".$_POST['file_image']."')";
 				$stid = oci_parse($conn, $sql);
-				echo "stid = ".intval($stid)."<br><br><br>";
+				echo "<br>stid = ".intval($stid)."<br><br><br>";
 				oci_execute($stid);
 			
 				echo 'New image is added.<br />';
