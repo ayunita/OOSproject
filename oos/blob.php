@@ -1,4 +1,12 @@
 <?php
+
+    /*
+     *  taken from:
+     *  http://php.net/manual/en/function.base64-encode.php
+     *  http://php.net/manual/en/function.oci-new-descriptor.php
+     *  modified by yunita
+     */
+
 	include ("PHPconnectionDB.php");        
 	//establish connection
 	$connection=connect();

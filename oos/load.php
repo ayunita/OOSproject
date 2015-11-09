@@ -1,4 +1,12 @@
 <?php
+    
+    /*
+     * taken from:
+     * http://php.net/manual/en/function.imagecreatefromstring.php
+     * http://stackoverflow.com/questions/3056287/oracle-blob-as-img-src-in-php-page
+     * modified by yunita
+     */
+
 	include ("PHPconnectionDB.php");        
 	//establish connection
 	$conn=connect();
