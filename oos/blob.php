@@ -17,7 +17,7 @@
         $image = base64_encode($image2);
         
         // change this sql query, this is just an example
-        $sql = "INSERT INTO test (id, image) VALUES(1, empty_blob()) RETURNING image INTO :image";
+        $sql = "INSERT INTO test (id, image) VALUES(100, empty_blob()) RETURNING image INTO :image";
         $result = oci_parse($connection, $sql);
         $blob = oci_new_descriptor($connection, OCI_D_LOB);
         oci_bind_by_name($result, ":image", $blob, -1, OCI_B_BLOB);

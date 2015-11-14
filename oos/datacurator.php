@@ -4,8 +4,13 @@
 		header("Location: restriction.html"); 
 		exit();
 	}
-
 ?>
+<?php
+	include ("PHPconnectionDB.php");        
+	//establish connection
+	$conn=connect();
+?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <script src="jquery-1.11.3.js" type="text/javascript"></script>
@@ -15,11 +20,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Data Curator</title>
 </head>
-<?php
-	include ("PHPconnectionDB.php");
-	//establish connection
-	$conn=connect();
-?>
 <body>
 	<h1>Data Curator Page</h1>
 	<button onclick="location.href = 'logout.php';">Logout</button>
@@ -29,27 +29,27 @@
 		<form action="" method="post">
 			<fieldset>
 				<legend>Audio Information:</legend>
-				Sensor id: <input type="number" name="sensor_audio_id"> <br /> <br />
+				Sensor id: <input type="text" name="sensor_audio_id"> <br /> <br />
 				Date created: <input type="text" name="date_audio"> <br /><br />
 				Length: <input type="text" name="length_audio"> <br /><br />
 				Description: <input type="text" name="desc_audio"> <br /><br />
 				File: <input type="file" name="file_audio"> <br /><br />
 				<button type="reset">Reset</button>
-				<input type="submit" name="upload_audio" value="Submit">
+				<input type="submit" name="submit_audio" value="Submit">
 			</fieldset>
 		</form>
 	</div>
 	<div id="upload_images_btn">Upload Image</div>
 	<div id="upload_images_panel">
-		<form action="" method="post">
+		<form action="" method="post" enctype="multipart/form-data">
 			<fieldset>
 				<legend>Image Information:</legend>
-				Sensor id: <input type="number" name="sensor_image_id"> <br /> <br />
-				Date created: <input type="text" name="date_image"> dd-mm-yyyy <br /><br /><!--type = "date" (???)-->
+				Sensor id: <input type="text" name="sensor_image_id"> <br /> <br />
+				Date created: <input type="text" name="date_image"> <br /><br />
 				Description: <input type="text" name="desc_image"> <br /><br />
 				File: <input type="file" name="file_image"> <br /><br />
 				<button type="reset">Reset</button>
-				<input type="submit" name="upload_image" value="Submit">
+				<input type="submit" name="submit_image" value="Submit">
 			</fieldset>
 		</form>
 	</div>
@@ -62,109 +62,48 @@
 				Date created: <input type="text" name="date_scalar"> <br /><br />
 				Value: <input type="text" name="scalar_value"> <br /><br />
 				<button type="reset">Reset</button>
-				<input type="submit" name="upload_scalar" value="Submit">
+				<input type="submit" name="submit_scalar" value="Submit">
 			</fieldset>
 		</form>
 	</div>
-		<?php
-		// TO DO: upload audio
+	<?php
+	
+	    /*
+		*  taken from:
+		*  http://php.net/manual/en/function.base64-encode.php
+		*  http://php.net/manual/en/function.oci-new-descriptor.php
+		*  (C) 2015 PHP Group modified by yunita
+		*/
 		
-		// TO DO: upload image
-		// http://forum.codecall.net/topic/40286-tutorial-storing-images-in-mysql-with-php/
-		// by: Guest_Jordan_*
-		if (isset($_POST["upload_image"])){
-			// to insert data into table IMAGES, we need (total 6 variables):
-			// IMAGE_ID, SENSOR_ID, DATE_CREATED, DESCRIPTION, THUMBNAIL, RECORDED_DATA
-			$imageId = rand(1000, 9999);
-			
-			// TO DO: check if the imageId is in the database. If yes then generate another one
-			$sensorId = $_POST['sensor_image_id']; // TO DO: check if the sensorId is in table sensors (???)
-			$date = $_POST['date_image'];
-			$description = $_POST['desc_image'];
-			
-			// upload an image file
-			
-			$imageFilename = $_FILES['file_image']; //read the image and insert into the database as thumbnail and recordedData
-			/*
-			$fp = fopen('beermug.jpg', 'r');
-			//$data = fread($fp, filesize($imageFilename));
-			$data = fread($imageFilename, filesize($imageFilename['size']));
-			$data = addslashes($data);
-			fclose($fp);
-			*/
-			/*
-			// http://www.codingcage.com/2014/12/file-upload-and-view-with-php-and-mysql.html
-			$file = rand(1000,100000)."-".$_FILES['file_image']['name'];
-			$file_loc = $_FILES['file_image']['tmp_name'];
-			$file_size = $_FILES['file_image']['size'];
-			$file_type = $_FILES['file_image']['type'];
- 			$folder="uploads/";
- 			move_uploaded_file($file_loc,$folder.$file);
- 			*/
- 			//$data = addslashes(file_get_contents($_FILES['file_image']['name']));
- 			//$data = addslashes(file_get_contents('/compsci/webdocs/yishuo/beermug.jpg'));
- 			
- 			$datatmp=($_FILES['file_image']['name']);
- 			$data=addslashes (file_get_contents($_FILES['file_image']['tmp_name']));
-			
-			
-			//TO DO: $thumbnail // similar to $data, but to resize it
-			//TO DO: $recordedData // same to $data
-			
-			// insert into the database
-			try {
-				$sql = "INSERT INTO IMAGES VALUES (".$imageId.", ".$sensorId.", ".$date.", ".strval($description).", ".$data.", ".$data.")";
-				//$sql = "INSERT INTO IMAGES VALUES (".$imageId.", ".$sensorId.", '".$date."', '".$description."', ".$imageFilename.", ".$imageFilename.")";
-				//$sql = "INSERT INTO IMAGES VALUES (".$imageId.", ".$sensorId.", '".$date."', '".$description."', ".bfilename('/compsci/webdocs/yishuo/web_docs/OOSproject/oos',"beermug.jpg").", ".bfilename('/compsci/webdocs/yishuo/web_docs/OOSproject/oos',"beermug.jpg")")";
-				echo "INSERT INTO IMAGES VALUES (".$imageId.", ".$sensorId.", ".$date.", '".$description."', "."NULL".", "."NULL".")";
-				//$sql = "INSERT INTO IMAGES VALUES (".$imageId.", '".$sensorId."', '".$date."', '".$description."', '".$_POST['file_image']."', '".$_POST['file_image']."')";
-				$stid = oci_parse($conn, $sql);
-				echo "<br>stid = ".intval($stid)."<br><br><br>";
-				oci_execute($stid);
-			
-				echo 'New image is added.<br />';
-				echo $imageId.", ".$sebsirId.", ".$date.", ".$desctiption.", ".$imageFilename;
-				oci_free_statement($stid);
-				oci_close($conn);
-			} catch (Exception $e) {
-				echo 'Caught Exception: ', $e->getMessage(), "\n";
-			}
-			/*
-			//$sql = "INSERT INTO IMAGES VALUES (".$imageId.", '".$sensorId."', '".$date."', '".$description."', '".$data."', '".$data."')";
-			$sql = "INSERT INTO IMAGES VALUES (".$imageId.", '".$sensorId."', '".$date."', '".$description."', '".$_POST['file_image']."', '".$_POST['file_image']."')";
-			$stid = oci_parse($conn, $sql );
-			$res = oci_execute($stid);
-			
-			echo 'New image is added.<br />';
-			echo $imageId.", ".$sebsirId.", ".$date.", ".$desctiption.", ".$imageFilename;
-			oci_free_statement($stid);
-			oci_close($conn);
-			*/
-			
-			
-			/*
-			$firstname=$_POST['firstname'];
-			$lastname=$_POST['lastname'];
-			$address=$_POST['address'];
-			$email=$_POST['email'];
-			$phone=$_POST['phone'];
-			$person_id=rand(1000, 9999);
-			$_SESSION['person_id'] = $person_id;
-			$sql = "INSERT INTO persons VALUES (".$person_id.", '".$firstname."', '".$lastname."', '".$address."', '".$email."', '".$phone."')";
-			$stid = oci_parse($conn, $sql );
-			$res=oci_execute($stid);
-			
-			echo 'New person is added.<br />';
-			echo $person_id.", ".$firstname.", ".$lastname.", ".$address.", ".$email.", ".$phone;
-			
-			// Free the statement identifier when closing the connection
-			oci_free_statement($stid);
-			oci_close($conn);
-			*/
-		}
+	    if (isset($_POST["submit_image"])){
+        $image2 = file_get_contents($_FILES['file_image']['tmp_name']);
+        // encode the stream
+        $image = base64_encode($image2);
+        
+		$image_id = rand(1000, 9999);
+		$sensor_id = $_POST['sensor_image_id'];
+		$date_created = $_POST['date_image'];
+		$description = $_POST['desc_image'];
 		
-		//TO DO: upload scalar
-		
-		?>
+        // change this sql query, this is just an example
+        $sql = "INSERT INTO images (image_id, sensor_id, date_created, description, thumbnail, recoreded_data)
+				VALUES(".$image_id.", ".$sensor_id.", TO_DATE('".$date_created."', 'YY-MM-DD'), '".$description."', '', empty_blob())
+				RETURNING recoreded_data INTO :recoreded_data";
+        $result = oci_parse($conn, $sql);
+        $blob = oci_new_descriptor($conn, OCI_D_LOB);
+        oci_bind_by_name($result, ":recoreded_data", $blob, -1, OCI_B_BLOB);
+        oci_execute($result, OCI_DEFAULT) or die ("Unable to execute query");
+        
+        if(!$blob->save($image)) {
+            oci_rollback($conn);
+        }
+        else {
+            oci_commit($conn);
+        }
+        
+        oci_free_statement($result);
+        $blob->free();
+    }
+	?>
 </body>
 </html>
