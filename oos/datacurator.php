@@ -76,34 +76,35 @@
 		*/
 		
 	    if (isset($_POST["submit_image"])){
-        $image2 = file_get_contents($_FILES['file_image']['tmp_name']);
-        // encode the stream
-        $image = base64_encode($image2);
-        
-		$image_id = rand(1000, 9999);
-		$sensor_id = $_POST['sensor_image_id'];
-		$date_created = $_POST['date_image'];
-		$description = $_POST['desc_image'];
-		
-        // change this sql query, this is just an example
-        $sql = "INSERT INTO images (image_id, sensor_id, date_created, description, thumbnail, recoreded_data)
-				VALUES(".$image_id.", ".$sensor_id.", TO_DATE('".$date_created."', 'YY-MM-DD'), '".$description."', '', empty_blob())
-				RETURNING recoreded_data INTO :recoreded_data";
-        $result = oci_parse($conn, $sql);
-        $blob = oci_new_descriptor($conn, OCI_D_LOB);
-        oci_bind_by_name($result, ":recoreded_data", $blob, -1, OCI_B_BLOB);
-        oci_execute($result, OCI_DEFAULT) or die ("Unable to execute query");
-        
-        if(!$blob->save($image)) {
-            oci_rollback($conn);
-        }
-        else {
-            oci_commit($conn);
-        }
-        
-        oci_free_statement($result);
-        $blob->free();
-    }
+			$image2 = file_get_contents($_FILES['file_image']['tmp_name']);
+			// encode the stream
+			$image = base64_encode($image2);
+			
+			$image_id = rand(1000, 9999);
+			$sensor_id = $_POST['sensor_image_id'];
+			$date_created = $_POST['date_image'];
+			$description = $_POST['desc_image'];
+			
+			// change this sql query, this is just an example
+			$sql = "INSERT INTO images (image_id, sensor_id, date_created, description, thumbnail, recoreded_data)
+					VALUES(".$image_id.", ".$sensor_id.", TO_DATE('".$date_created."', 'YY-MM-DD'), '".$description."', '', empty_blob())
+					RETURNING recoreded_data INTO :recoreded_data";
+			$result = oci_parse($conn, $sql);
+			$blob = oci_new_descriptor($conn, OCI_D_LOB);
+			oci_bind_by_name($result, ":recoreded_data", $blob, -1, OCI_B_BLOB);
+			oci_execute($result, OCI_DEFAULT) or die ("Unable to execute query");
+			
+			if(!$blob->save($image)) {
+				oci_rollback($conn);
+			}
+			else {
+				oci_commit($conn);
+			}
+			
+			oci_free_statement($result);
+			$blob->free();
+		}
+	
 	?>
 </body>
 </html>

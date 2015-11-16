@@ -11,18 +11,25 @@
 	//establish connection
 	$conn=connect();
 
-    $sql = "SELECT recoreded_data FROM images WHERE image_id = 7486";
+    $sql = "SELECT audio FROM test WHERE id = 8869";
     $stid = oci_parse($conn, $sql);
     oci_execute($stid);
     $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
     if (!$row) {
         header('Status: 404 Not Found');
     } else {
-        $img = $row['RECOREDED_DATA']->load();
-        header("Content-type: image/jpeg");
+        $wav = $row['AUDIO']->load();
+        // header("Content-type: audio/wav");
         
         // decode the stream
-        print base64_decode($img);
+	$wav_source = base64_decode($wav);
+	
     }
-
 ?>
+<html>
+<head><title>Load</title></head>
+<body>
+<!-- .wav player works in Chrome -->
+<audio controls src="data:audio/wav;base64,<?php print $wav; ?>"/>
+</body>
+</html>
