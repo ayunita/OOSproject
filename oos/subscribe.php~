@@ -4,6 +4,7 @@
 		header("Location: restriction.html");
 		exit();
 	}	
+	
 
 ?>
 <html>
