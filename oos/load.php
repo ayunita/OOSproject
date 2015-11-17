@@ -40,7 +40,7 @@
 		<form action="" method="post">
 		Search image: <select name="images" value="">image id</option>
 		<?php
-			$sql = "SELECT id FROM test2";
+			$sql = "SELECT image_id FROM images";
 			$stid = oci_parse($conn, $sql );
 			$res = oci_execute($stid);
 					
@@ -91,18 +91,24 @@
 <?php
 	if (isset($_POST["search_image"])){
 		$image_id=$_POST['images'];
-		$sql = "SELECT image FROM test2 WHERE id =".$image_id;
+		$sql = "SELECT thumbnail, recoreded_data FROM images WHERE image_id =".$image_id;
 		$stid = oci_parse($conn, $sql);
 		oci_execute($stid);
 		$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 		if (!$row) {
 			header('Status: 404 Not Found');
 		} else {
-			$img = $row['IMAGE']->load();
+			$img = $row['THUMBNAIL']->load();
 			$decoded = base64_decode($img);
 			
 			// display image (no need decoded)
-			echo '<img src="data:image/gif;base64,'.$img.'" />';
+			echo '<img src="data:image/jpg;base64,'.$img.'" />';
+
+			$img = $row['RECOREDED_DATA']->load();
+			$decoded = base64_decode($img);
+			
+			// display image (no need decoded)
+			echo '<img src="data:image/jpg;base64,'.$img.'" />';
 			
 			/*
 			* This is the trick for convert string base64 to file and download it:

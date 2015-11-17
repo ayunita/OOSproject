@@ -48,7 +48,7 @@
 	<form action="" method="post">
 			<b>Delete sensor</b><br />
 			(Deleting a sensor will also delete data corresponding to this sensor) <br />
-			Sensor id: <select name="del_sensor" value="">Sensor id</option>
+			Sensor id: <select name="del_sensor">
 				
 			<?php
 				$sql = "SELECT sensor_id FROM sensors";
@@ -61,7 +61,7 @@
 					}
 				}
 			?>
-			
+			</select>
 			<input type="submit" name="delete_sensor" value="Delete">
 	</form>
 	</div>
@@ -71,7 +71,7 @@
 		<form action="" method="post">
 			<fieldset>
 				<legend>New User Information:</legend>
-				Person id: <select name="user_id" value="">Person id</option>
+				Person id: <select name="user_id">
 				
 				<?php
 					$sql = "SELECT person_id FROM persons";
@@ -121,7 +121,7 @@
 	
 		<form action="" method="post">
 			<b>Edit person information</b><br />			
-			Search person_id: <select name="edit_personid" value="">Person id</option>
+			Search person_id: <select name="edit_personid">
 			
 			<?php
 				$sql = "SELECT person_id FROM persons";
@@ -134,7 +134,7 @@
 					}
 				}
 			?>
-			
+			</select>
 			<input type="submit" name="search_person" value="Search">
 		</form>
 	<?php
@@ -142,7 +142,7 @@
 	?>
 		<br /><form action="" method="post">
 			<b>Edit user information</b><br />
-			Search username: <select name="search_username" value="">Username</option>
+			Search username: <select name="search_username">
 			
 			<?php
 				$sql= "SELECT user_name FROM users";
@@ -155,7 +155,7 @@
 					}
 				}
 			?>
-			
+			</select>
 			<input type="submit" name="search_user" value="Search">
 		</form>
 		
@@ -168,7 +168,7 @@
 	<div id="del_user_panel">
 		<form action="" method="post">
 			<b>Delete user</b><br />
-			Username: <select name="del_username" value="">Username</option>
+			Username: <select name="del_username">
 			
 			<?php
 				$sql = "SELECT user_name FROM users";
@@ -181,13 +181,14 @@
 					}
 				}
 			?>
+			</select>
 			<input type="submit" name="delete_user" value="Delete">
 			
 		</form>
 		<form action="" method="post">
 			<b>Delete person</b><br />
 			(Deleting a person will also delete the user and data corresponding to this id) <br />
-			Person_id: <select name="del_person" value="">Person id</option>
+			Person_id: <select name="del_person">
 			
 			<?php
 				$sql = "SELECT person_id FROM persons";
@@ -200,6 +201,7 @@
 					}
 				}
 			?>
+			</select>
 			<input type="submit" name="delete_person" value="Delete">
 		</form>
 	</div>
