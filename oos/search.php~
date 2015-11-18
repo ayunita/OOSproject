@@ -110,7 +110,7 @@
 						oci_execute($stid);
 						$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 						if (!$row) {
-							//echo '<br>Status: 404 Not Found<br>';
+							echo '<br>Status: 404 Not Found<br>';
 						} 
 						if ($row['RECOREDED_DATA'] != null){
 							$img = $row['RECOREDED_DATA']->load();
@@ -146,7 +146,7 @@
 						oci_execute($stid);
 						$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 						if (!$row) {
-							//echo '<br>Status: 404 Not Found<br>';
+							echo '<br>Status: 404 Not Found<br>';
 						} else if ($row[''] != null){
 						$wav = $row['RECORDED_DATA']->load();
 						$decoded = base64_decode($wav);
@@ -227,7 +227,7 @@
 					oci_execute($stid);
 					$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 					if (!$row) {
-						//echo '<br>Status: 404 Not Found<br>';
+						echo '<br>Status: 404 Not Found<br>';
 					} else if ($row['RECOREDED_DATA'] != null){
 							
 							$img = $row['RECOREDED_DATA']->load();
@@ -254,7 +254,7 @@
 					oci_execute($stid);
 					$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 					if (!$row) {
-						//echo '<br>Status: 404 Not Found<br>';
+						echo '<br>Status: 404 Not Found<br>';
 					} else if ($row['RECORDED_DATA'] != null){
 					$wav = $row['RECORDED_DATA']->load();
 					$decoded = base64_decode($wav);
