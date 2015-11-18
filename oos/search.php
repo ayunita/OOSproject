@@ -132,9 +132,8 @@
 						if (!$row) {
 							//echo '<br>Status: 404 Not Found<br>';
 						} 
-						if ($row['RECOREDED_DATA'] != null){
-							$img = $row['RECOREDED_DATA']->load();
-							$decoded = base64_decode($img);
+						if ($row['THUMBNAIL'] != null && $row['RECOREDED_DATA'] != null){
+							$img = $row['THUMBNAIL']->load();
 			
 							// display image (no need decoded)
 							echo '<img src="data:image/gif;base64,'.$img.'" />';
@@ -203,7 +202,10 @@
 				}
 				if(strval($_POST['location']) != "") {
 					$sql = $sql." AND LOCATION = '".$_POST['location']."'";
-				}	
+				}
+				
+				//echo $sql."<br>";
+				
 				
 				$stid = oci_parse($conn, $sql );
 				oci_execute($stid);
