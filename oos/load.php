@@ -99,7 +99,6 @@
 			header('Status: 404 Not Found');
 		} else {
 			$img = $row['THUMBNAIL']->load();
-			$decoded = base64_decode($img);
 			
 			// display image (no need decoded)
 			echo '<img src="data:image/jpg;base64,'.$img.'" />';
@@ -119,7 +118,7 @@
 			*/
 			file_put_contents('sensor.jpg', $decoded);
 			
-			// download the audio
+			// download the image in full size
 			echo '<br /><a href="sensor.jpg" download="'.$image_id.'.jpg">Download image</a>';
 		}
 	}

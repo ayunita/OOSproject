@@ -6,7 +6,9 @@
 	}
 ?>
 <?php
-	include ("PHPconnectionDB.php");        
+	include ("PHPconnectionDB.php");   
+	include ("Datacurator.php");
+	//include ("resizeImage.php");   
 	//establish connection
 	$conn=connect();
 ?>
@@ -26,11 +28,24 @@
 	<h2>Upload Module</h2>
 	<div id="upload_audio_btn">Upload Audio</div>
 	<div id="upload_audio_panel">
-		<form action="" method="post">
+		<form action="" method="post" enctype="multipart/form-data">
 			<fieldset>
 				<legend>Audio Information:</legend>
-				Sensor id: <input type="text" name="sensor_audio_id"> <br /> <br />
-				Date created: <input type="text" name="date_audio"> <br /><br />
+				Sensor id: <select name="sensor_audio_id">				
+				<?php
+					$sql = "SELECT sensor_id FROM sensors WHERE sensor_type = 'a'";
+					$stid = oci_parse($conn, $sql );
+					$res = oci_execute($stid);
+					
+					while ($row = oci_fetch_array($stid, OCI_ASSOC)) {
+						foreach ($row as $id) {
+							echo "<option value=$id>$id</option>"; 
+						}
+					}	
+				?>
+				</select>
+				<br /><br />				
+				Date created: <input type="text" name="date_audio"> DD/MM/YYYY HH:MM:SS<br /><br />
 				Length: <input type="text" name="length_audio"> <br /><br />
 				Description: <input type="text" name="desc_audio"> <br /><br />
 				File: <input type="file" name="file_audio"> <br /><br />
@@ -71,8 +86,21 @@
 		<form action="" method="post">
 			<fieldset>
 				<legend>Scalar Information:</legend>
-				Sensor id: <input type="text" name="sensor_scalar_id"> <br /> <br />
-				Date created: <input type="text" name="date_scalar"> <br /><br />
+				Sensor id: <select name="sensor_scalar_id">				
+				<?php
+					$sql = "SELECT sensor_id FROM sensors WHERE sensor_type = 's'";
+					$stid = oci_parse($conn, $sql );
+					$res = oci_execute($stid);
+					
+					while ($row = oci_fetch_array($stid, OCI_ASSOC)) {
+						foreach ($row as $id) {
+							echo "<option value=$id>$id</option>"; 
+						}
+					}	
+				?>
+				</select>
+				<br /><br />
+				Date created: <input type="text" name="date_scalar"> DD/MM/YYYY HH:MM:SS<br /><br />
 				Value: <input type="text" name="scalar_value"> <br /><br />
 				<button type="reset">Reset</button>
 				<input type="submit" name="submit_scalar" value="Submit">
@@ -80,118 +108,98 @@
 		</form>
 	</div>
 	<?php
-	
-	    /*
-		*  taken from:
-		*  http://php.net/manual/en/function.base64-encode.php
-		*  http://php.net/manual/en/function.oci-new-descriptor.php
-		*  (C) 2015 PHP Group modified by yunita
-		*/
-		
-	    if (isset($_POST["submit_image"])){
-			$image_id = rand(1000, 9999);
-			$sensor_id = $_POST['sensor_image_id'];
-			$date_created = $_POST['date_image'];
-			$description = $_POST['desc_image'];
-			
-			$image2= file_get_contents($_FILES['file_image']['tmp_name']);
-			
-			// encode the image into string for full size image
-			$fullsize_image = base64_encode($image2);
-			
-			// get image information
-			$image_info = getimagesize($_FILES['file_image']['tmp_name']);
-			$image_width = $image_info[0];
-			$image_height = $image_info[1];
-
-			$thumb = resizeImage($_FILES['file_image']['tmp_name'],$image_width, $image_height);
-			
-			/*
-			 * taken from http://stackoverflow.com/questions/8551754/convert-gd-output-to-base64
-			 * (C) 2011 Filip Roséen
-			 *
-			 * This is the part to convert the image to thumbnail
-			 * For the project, we need to display the thumbnail, and
-			 * download the full size image.
-			 * Run this to see the example:
-			 * http://consort.cs.ualberta.ca/~yunita/OOSproject/oos/upload.php
-			 * http://consort.cs.ualberta.ca/~yunita/OOSproject/oos/load.php
-			 */ 
-			ob_start (); 
-			imagejpeg ($thumb);
-			$image_data = ob_get_contents (); 
-			ob_end_clean ();
-			
-			// encode the image into string for thumbnail
-			$image = base64_encode($image_data);
-			
-			// change this sql query, this is just an example
-			$sql = "INSERT INTO images (image_id, sensor_id, date_created, description, thumbnail, recoreded_data)
-					VALUES(".$image_id.", ".$sensor_id.", TO_DATE('".$date_created."', 'YY-MM-DD'), '".$description."', empty_blob(), empty_blob())
-					RETURNING thumbnail, recoreded_data INTO :thumbnail, :recoreded_data";
-			$result = oci_parse($conn, $sql);
-			
-			$blob1 = oci_new_descriptor($conn, OCI_D_LOB);
-			$blob2 = oci_new_descriptor($conn, OCI_D_LOB);
-			
-			oci_bind_by_name($result, ":thumbnail", $blob1, -1, OCI_B_BLOB);
-			oci_bind_by_name($result, ":recoreded_data", $blob2, -1, OCI_B_BLOB);
-			
-			oci_execute($result, OCI_DEFAULT) or die ("Unable to execute query");
-			
-			// if blob1 & blob2 are not empty -> save both, then commit
-			if($blob1->save($image) && $blob2->save($fullsize_image)) {
-				oci_commit($conn);
-			}
-			else {
-				oci_rollback($conn);
-			}
-			
-			
-			oci_free_statement($result);
-			$blob1->free();
-			$blob2->free();
-		}
-	
+	     // ----Upload Audio----
+        if (isset($_POST["submit_audio"])) {
+        	/*
+        		Sensor id: <input type="text" name="sensor_audio_id"> <br /> <br />
+				Date created: <input type="text" name="date_audio"> DD/MM/YYYY<br /><br />
+				Length: <input type="text" name="length_audio"> <br /><br />
+				Description: <input type="text" name="desc_audio"> <br /><br />
+				File: <input type="file" name="file_audio"> <br /><br />
+        	*/
+        	   // sensor_id
+	         $sensor_id = $_POST['sensor_audio_id'];
+	         if (checkSensorId($conn, $sensor_id) != 0) {
+	             return;
+	         }
+	         // date
+	         $date_created = $_POST['date_audio'];
+	         // length
+	         $length = $_POST['length_audio'];
+	         // description
+	         $description = $_POST['desc_audio'];
+	         // Audio Type Check
+	         $audioType = $_FILES['file_audio']['type'];
+	         if ($audioType != "audio.wav") {
+	             echo "File Not Found/Extension not allowed, please choose a wav file";
+	         }
+	         
+	         $audio_id = generateId($conn, "audio_recordings");
+	         if ($audio_id == 0) {
+	             return;
+	         }
+	         
+            $audio2 = file_get_contents($_FILES['file_image']['tmp_name']);
+            
+	     }
+	    
+	     // ----Upload Image----
+        // TO DO: thumbnail -> resize the image and update the database
+        if (isset($_POST["submit_image"])){
+		      // sensor_id
+ 		      $sensor_id = $_POST['sensor_image_id'];
+ 		      /*
+ 		      $tmp = checkSensorId($conn, $sensor_id);
+ 		      if ($tmp != 0) {
+ 		          return;
+ 		      }
+ 		      */
+ 		      if (checkSensorId($conn, $sensor_id) != 0) {
+ 		          return;
+ 		      }
+		      // date
+		      $date_created = $_POST['date_image'];
+		      // description
+		      $description = $_POST['desc_image'];
+		      // Image Type Check
+		      $imgType=$_FILES['file_image']['type'];
+		      if ($imgType != "image/jpeg") {
+		          echo "File Not Found/Extension not allowed, please choose a JPG file";
+                return;
+		      }
+	         // Upload Image
+	         uploadImage($conn, $sensor_id, $date_created, $description);
+        }
+        
+        // ----Upload Scalar----
+        if (isset($_POST["submit_scalar"])) {
+        	   $id = generateId($conn, "scalar_data");
+            // sensorId
+            $sensorId = $_POST['sensor_scalar_id'];
+ 		      if (checkSensorId($conn, $sensorId) != 0) {
+ 		          return;
+ 		      }
+            
+            // date
+            $date = $_POST['date_scalar'];
+            
+            // value
+            $value = $_POST['scalar_value'];
+            
+            $sql = "INSERT INTO scalar_data VALUES (".$scalarId.", ".$sensorId.", TO_DATE('".$date."', 'DD/MM/YYYY'),".$value.")";
+            $stid = oci_parse($conn, $sql);
+            $res=oci_execute($stid);
+            if (!$res) {
+                $err = oci_error($stid); 
+                echo htmlentities($err['message']);
+            }
+	         else{
+		          echo 'Row inserted <br>scalar Id -> '.$scalarId.'<br>';
+	         }
+            oci_free_statement($stid);
+        }
+        
+        oci_close($conn);
 	?>
 </body>
 </html>
-
-<?php
-	/**
-	* Resize an image and keep the proportions
-	* @author Allison Beckwith <allison@planetargon.com>
-	* @param string $filename
-	* @param integer $max_width
-	* @param integer $max_height
-	* @return image
-	*/
-	function resizeImage($filename, $max_width, $max_height)
-	{
-		list($orig_width, $orig_height) = getimagesize($filename);
-	
-		$width = $orig_width;
-		$height = $orig_height;
-	
-		# taller
-		if ($height > $max_height) {
-			$width = ($max_height / $height) * $width;
-			$height = $max_height;
-		}
-	
-		# wider
-		if ($width > $max_width) {
-			$height = ($max_width / $width) * $height;
-			$width = $max_width;
-		}
-	
-		$image_p = imagecreatetruecolor($width, $height);
-	
-		$image = imagecreatefromjpeg($filename);
-	
-		imagecopyresampled($image_p, $image, 0, 0, 0, 0, 
-										 $width, $height, $orig_width, $orig_height);
-	
-		return $image_p;
-	}
-?>
