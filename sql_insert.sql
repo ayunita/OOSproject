@@ -23,22 +23,24 @@ INSERT INTO subscriptions VALUES (4, 22);
 INSERT INTO subscriptions VALUES (4, 44);
 INSERT INTO subscriptions VALUES (5, 44);
 
-INSERT INTO audio_recordings VALUES (1, 1, TO_DATE('12-10-01', 'YY-MM-DD'), 10, 'audio 1', '');
-INSERT INTO audio_recordings VALUES (2, 1, TO_DATE('13-05-01', 'YY-MM-DD'), 10, 'audio 2', '');
-INSERT INTO audio_recordings VALUES (3, 1, TO_DATE('13-06-11', 'YY-MM-DD'), 3, 'audio 3', '');
-INSERT INTO audio_recordings VALUES (4, 4, TO_DATE('14-01-21', 'YY-MM-DD'), 5, 'audio 4', '');
-INSERT INTO audio_recordings VALUES (5, 4, TO_DATE('12-03-17', 'YY-MM-DD'), 5, 'audio 5', '');
-
-INSERT INTO images VALUES (1, 2, TO_DATE('12-11-21', 'YY-MM-DD'), 'image 1', '', '');
-INSERT INTO images VALUES (2, 5, TO_DATE('12-12-21', 'YY-MM-DD'), 'image 2', '', '');
-INSERT INTO images VALUES (3, 5, TO_DATE('13-02-21', 'YY-MM-DD'), 'image 3', '', '');
-INSERT INTO images VALUES (4, 5, TO_DATE('13-08-21', 'YY-MM-DD'), 'image 4', '', '');
-INSERT INTO images VALUES (5, 2, TO_DATE('14-01-21', 'YY-MM-DD'), 'image 5', '', '');
-
-INSERT INTO scalar_data VALUES (1, 3, TO_DATE('12-11-21', 'YY-MM-DD'), 200);
-INSERT INTO scalar_data VALUES (2, 3, TO_DATE('13-11-21', 'YY-MM-DD'), 500);
-INSERT INTO scalar_data VALUES (3, 3, TO_DATE('14-11-21', 'YY-MM-DD'), 100);
-INSERT INTO scalar_data VALUES (4, 6, TO_DATE('14-12-21', 'YY-MM-DD'), 100);
-INSERT INTO scalar_data VALUES (5, 6, TO_DATE('15-11-21', 'YY-MM-DD'), 250);
+/*
+    INSERT INTO audio_recordings VALUES (1, 1, TO_DATE('12-10-01', 'YY-MM-DD'), 10, 'audio 1', '');
+    INSERT INTO audio_recordings VALUES (2, 1, TO_DATE('13-05-01', 'YY-MM-DD'), 10, 'audio 2', '');
+    INSERT INTO audio_recordings VALUES (3, 1, TO_DATE('13-06-11', 'YY-MM-DD'), 3, 'audio 3', '');
+    INSERT INTO audio_recordings VALUES (4, 4, TO_DATE('14-01-21', 'YY-MM-DD'), 5, 'audio 4', '');
+    INSERT INTO audio_recordings VALUES (5, 4, TO_DATE('12-03-17', 'YY-MM-DD'), 5, 'audio 5', '');
+    
+    INSERT INTO images VALUES (1, 2, TO_DATE('12-11-21', 'YY-MM-DD'), 'image 1', '', '');
+    INSERT INTO images VALUES (2, 5, TO_DATE('12-12-21', 'YY-MM-DD'), 'image 2', '', '');
+    INSERT INTO images VALUES (3, 5, TO_DATE('13-02-21', 'YY-MM-DD'), 'image 3', '', '');
+    INSERT INTO images VALUES (4, 5, TO_DATE('13-08-21', 'YY-MM-DD'), 'image 4', '', '');
+    INSERT INTO images VALUES (5, 2, TO_DATE('14-01-21', 'YY-MM-DD'), 'image 5', '', '');
+    
+    INSERT INTO scalar_data VALUES (1, 3, TO_DATE('12-11-21', 'YY-MM-DD'), 200);
+    INSERT INTO scalar_data VALUES (2, 3, TO_DATE('13-11-21', 'YY-MM-DD'), 500);
+    INSERT INTO scalar_data VALUES (3, 3, TO_DATE('14-11-21', 'YY-MM-DD'), 100);
+    INSERT INTO scalar_data VALUES (4, 6, TO_DATE('14-12-21', 'YY-MM-DD'), 100);
+    INSERT INTO scalar_data VALUES (5, 6, TO_DATE('15-11-21', 'YY-MM-DD'), 250);
+*/
 
 COMMIT;
