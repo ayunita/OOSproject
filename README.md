@@ -5,10 +5,8 @@
 ### Setup project:
 - clone this project under /compsci/webdocs/ccid/web_docs
 - chmod 755 web_docs
-- chmod 755 OOSproject folder and oos folder
-- chmod 644 files inside oos folder
-- chmod 777 for dummy files (sensor.jpg, audio.wav, temp.csv)
-- open: http://consort.cs.ualberta.ca/<~ccid>/OOSproject/oos/login.html
+- chmod 755 oos.sh
+- run oos.sh in command line
 
 ### Setup database: 
 - run setup.sql
