@@ -308,12 +308,11 @@
 							// play the audio
 							echo '<audio controls>';
 							// change src to "data:audio/wav;base64,'.$wav.'"
-							echo '<source src="audio.wav" type="audio/wav">';
+							echo '<source src="data:audio/wav;base64,'.$wav.'">';
 							echo '</audio>';
 			
 							// download the audio
-							// change ahref to "data:audio/wav;base64,'.$wav.'"
-							echo '<br /><a href="audio.wav" download="'.$sensor_ids[$i2].'.wav">Download audio</a>';
+							echo '<br /><a href="data:audio/wav;base64,'.$wav.'" download="'.$sensor_ids[$i2].'.wav">Download audio</a>';
 							//Audio
 						
 						}else if ($row['RECORDED_DATA'] == null){

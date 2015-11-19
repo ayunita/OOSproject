@@ -139,9 +139,9 @@
 	             		return;
 	        	 }      
            		 $audio2 = file_get_contents($_FILES['file_audio']['tmp_name']);
-            		 $audio = base64_encode($audio2);
+            	 $audio = base64_encode($audio2);
            		 $sql = "INSERT INTO audio_recordings(recording_id, sensor_id, date_created, length, description, recorded_data)
-                         VALUES(".$audio_id.",".$sensor_id.", TO_DATE('".$date_created."', 'DD/MM/YYYY hh24:mi:ss'),".$length.",".$description.",empty_blob())
+                         VALUES(".$audio_id.",".$sensor_id.", TO_DATE('".$date_created."', 'DD/MM/YYYY hh24:mi:ss'),".$length.",'".$description."',empty_blob())
                          RETURNING recorded_data INTO :recorded_data";
          
                          
@@ -152,7 +152,7 @@
             		 if ($recorded_dataBlob -> save($audio)) {
                		 	oci_commit($conn);
             		 } else {
-            	    		oci_rollback($conn);
+            	    	oci_rollback($conn);
             		 }
             		 oci_free_statement($result);
             		 $recorded_dataBlob->free();
