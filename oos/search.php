@@ -139,16 +139,13 @@
 							if ($row['THUMBNAIL'] != null && $row['RECOREDED_DATA'] != null){
 								$img = $row['THUMBNAIL']->load();
 			
-								// display image (no need decoded)
+								// display thumbnail (no need decoded)
 								echo '<br><img src="data:image/gif;base64,'.$img.'" />';
 			
-								$img = $row['RECOREDED_DATA']->load();
-								$decoded = base64_decode($img);
+								$img2 = $row['RECOREDED_DATA']->load();
 
-								file_put_contents('sensor.jpg', $decoded);
-
-								// download the audio
-								echo '<br /><a href="sensor.jpg" download="'.$sensor_ids[$i2].'.jpg">Download image</a>';
+								// download the full size image
+								echo '<br /><a href="data:image/gif;base64,'.$img2.'" download="'.$sensor_ids[$i2].'.jpg">Download image</a>';
 								//oci_free_statement($stid);
 							
 							} else if($row['RECOREDED_DATA'] == null){
@@ -310,10 +307,12 @@
 				
 							// play the audio
 							echo '<audio controls>';
+							// change src to "data:audio/wav;base64,'.$wav.'"
 							echo '<source src="audio.wav" type="audio/wav">';
 							echo '</audio>';
 			
 							// download the audio
+							// change ahref to "data:audio/wav;base64,'.$wav.'"
 							echo '<br /><a href="audio.wav" download="'.$sensor_ids[$i2].'.wav">Download audio</a>';
 							//Audio
 						
