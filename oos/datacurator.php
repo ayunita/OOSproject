@@ -7,7 +7,7 @@
 ?>
 <?php
 	include ("PHPconnectionDB.php");   
-	include ("Datacurator.php");
+	include ("datacuratorFunction.php");
 	//include ("resizeImage.php");   
 	//establish connection
 	$conn=connect();
