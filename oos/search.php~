@@ -237,7 +237,6 @@
 			
 				for ($i2 = 0; $i2 < $i; $i2++){
 					echo "<br />Sensors that satisfy the conditions:<br>Sensor ID: ".$sensor_ids[$i2]."<br />";
-					$match  = true;
 					$search_string_image = "select thumbnail, recoreded_data from images where SENSOR_ID = ".$sensor_ids[$i2];
 					$search_string_audio = "select recorded_data from audio_recordings where SENSOR_ID = ".$sensor_ids[$i2];
 			
