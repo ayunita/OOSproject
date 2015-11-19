@@ -113,14 +113,11 @@
 						//echo "<br>".$search_string_image."<br>";
 						//echo "<br>".$search_string_audio."<br>";
 						//echo "<br>".$search_string_scalar."<br>";
-					
 
 						$stid = oci_parse($conn, $search_string_scalar);
 						oci_execute($stid);
 						
 						//scalar
-						echo "Scalar Data:";
-						
 						$i3 = 0;
 						while (oci_fetch($stid)) {
 							echo "<br>".oci_result($stid, 'ID'),",", oci_result($stid, 'SENSOR_ID'),",",oci_result($stid, 'DATE_CREATED'),",",oci_result($stid, 'VALUE');
@@ -136,62 +133,67 @@
 						//fetch image
 						$stid = oci_parse($conn,$search_string_image);
 						oci_execute($stid);
-						$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
+												
+						while($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS )){	
 						
-						if (!$row) {
-							//echo '<br>Status: 404 Not Found<br>';
-						} 
-						if ($row['THUMBNAIL'] != null && $row['RECOREDED_DATA'] != null){
-							$img = $row['THUMBNAIL']->load();
+							if ($row['THUMBNAIL'] != null && $row['RECOREDED_DATA'] != null){
+								$img = $row['THUMBNAIL']->load();
 			
-							// display image (no need decoded)
-							echo '<img src="data:image/gif;base64,'.$img.'" />';
+								// display image (no need decoded)
+								echo '<br><img src="data:image/gif;base64,'.$img.'" />';
 			
-							$img = $row['RECOREDED_DATA']->load();
-							$decoded = base64_decode($img);
+								$img = $row['RECOREDED_DATA']->load();
+								$decoded = base64_decode($img);
 
-							file_put_contents('sensor.jpg', $decoded);
+								file_put_contents('sensor.jpg', $decoded);
 
-			
-							// download the audio
-							echo '<br /><a href="sensor.jpg" download="'.$sensor_ids[$i2].'.jpg">Download image</a>';
-							oci_free_statement($stid);
+								// download the audio
+								echo '<br /><a href="sensor.jpg" download="'.$sensor_ids[$i2].'.jpg">Download image</a>';
+								//oci_free_statement($stid);
 							
-						} else if($row['RECOREDED_DATA'] == null){
-							echo "<br />THIS SENSOR HAS NO IMAGE<br />";
+							} else if($row['RECOREDED_DATA'] == null){
+								//echo "<br />THIS SENSOR HAS NO IMAGE<br />";
+							}
 						}
-						//oci_free_statement($stid);
+						$num = oci_num_rows($stid);	
+						if ($num == 0) {
+							echo "<br />THIS SENSOR HAS NO IMAGE<br />";
+						} 
 						
-						//audio
+						
+						//fetch audio
 						$stid = oci_parse($conn, $search_string_audio);
 						oci_execute($stid);
-						$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
-						
-
-						if (!$row) {
-							//echo '<br>Status: 404 Not Found<br>';
-						}
-						if ($row['RECORDED_DATA'] != null){
-						$wav = $row['RECORDED_DATA']->load();
-						$decoded = base64_decode($wav);
+							
+						while($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)){
+							if (!$row) {
+								//echo '<br>Status: 404 Not Found<br>';
+							}
+							if ($row['RECORDED_DATA'] != null){
+								$wav = $row['RECORDED_DATA']->load();
+								$decoded = base64_decode($wav);
 			
-						file_put_contents('audio.wav', $decoded);
+								file_put_contents('audio.wav', $decoded);
 				
-						// play the audio
-						echo '<audio controls>';
-						echo '<source src="audio.wav" type="audio/wav">';
-						echo '</audio>';
+								// play the audio
+								echo '<audio controls>';
+								echo '<source src="audio.wav" type="audio/wav">';
+								echo '</audio>';
 			
-						// download the audio
-						echo '<br /><a href="audio.wav" download="'.$sensor_ids[$i2].'.wav">Download audio</a>';
-						//Audio
+								// download the audio
+								echo '<br /><a href="audio.wav" download="'.$sensor_ids[$i2].'.wav">Download audio</a>';
+								//Audio
 						
-						}else if ($row['RECORDED_DATA'] == null){
-							echo "<br />THIS SENSOR HAS NO AUDIO<br />";
+							}else if ($row['RECORDED_DATA'] == null){
+								//echo "<br />THIS SENSOR HAS NO AUDIO<br />";
+							}	
 						}
-						//oci_free_statement($stid);
-						
-						echo "<hr>";	
+						$num = oci_num_rows($stid);	
+						if ($num == 0) {
+							echo "<br />THIS SENSOR HAS NO AUDIO<br />";
+						} 		
+						echo "<hr>";
+					
 					}
 
 					if ($lists != null){
@@ -201,18 +203,15 @@
 						}
 						fclose($fp);
 
-						echo "<br><a href=\"file.csv\" download=\"scalar_data.csv\">Download Scalar</a>";
-						
-					}
-					
+						echo "<br><a href=\"file.csv\" download=\"scalar_data.csv\">Download Scalar</a>";	
+					}				
 				}
 			
 
 			if ($i == 0 ){
 
-				// select sensors that satify ID, type, location and description
+				// select sensors that satify ID, type, location
 				$sql = "SELECT * FROM subscriptions NATURAL JOIN sensors WHERE PERSON_ID = ".$_SESSION['person_id'];
-				
 				if(strval($_POST['type']) != "") {
 					$sql = $sql." AND SENSOR_TYPE = '".$_POST['type']."'";
 				}
@@ -221,7 +220,6 @@
 				}
 				
 				//echo $sql."<br>";
-				
 				
 				$stid = oci_parse($conn, $sql );
 				oci_execute($stid);
@@ -234,10 +232,9 @@
 				}
 				oci_free_statement($stid);
 				$lists = array();
-			
+	
 				for ($i2 = 0; $i2 < $i; $i2++){
-					echo "<br />Sensors that satisfy the conditions:<br>Sensor ID: ".$sensor_ids[$i2]."<br />";
-					$match  = true;
+					
 					$search_string_image = "select thumbnail, recoreded_data from images where SENSOR_ID = ".$sensor_ids[$i2];
 					$search_string_audio = "select recorded_data from audio_recordings where SENSOR_ID = ".$sensor_ids[$i2];
 			
@@ -260,20 +257,21 @@
 					
 					$stid = oci_parse($conn,$search_string_image);
 					oci_execute($stid);
-					$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
-					
+					$num = oci_num_rows($stid);	
 
-					if (!$row) {
-						//echo '<br>Status: 404 Not Found<br>';
+					if ($num == 0) {
+						//echo "<br />THIS SENSOR HAS NO IMAGE<br />";
 					} 
-					if ($row['THUMBNAIL'] != null && $row['RECOREDED_DATA'] != null){
-						
+					
+					while($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)){
+						if ($row['THUMBNAIL'] != null && $row['RECOREDED_DATA'] != null){
+							$match  = true;
 							$img = $row['THUMBNAIL']->load();
 			
 							$decoded = base64_decode($img);
 			
 							// display image (no need decoded)
-							echo '<img src="data:image/gif;base64,'.$img.'" />';
+							echo '<br><img src="data:image/gif;base64,'.$img.'" />';
 
 							$img = $row['RECOREDED_DATA']->load();
 							$decoded = base64_decode($img);
@@ -282,41 +280,58 @@
 							//oci_free_statement($stid);
 							
 
-					}else if($row['THUMBNAIL'] == null){
-							echo "<br />THIS SENSOR HAS NO IMAGE<br />";
+						}else if($row['THUMBNAIL'] == null){
+							//echo "<br />THIS SENSOR HAS NO IMAGE<br />";
+						}
 					}
+					
+					$num = oci_num_rows($stid);	
+					if ($num == 0) {
+						//echo "<br />THIS SENSOR HAS NO IMAGE<br />";
+					} 
 					//oci_free_statement($stid);
 					
 					//audio
 					$stid = oci_parse($conn, $search_string_audio);
 					oci_execute($stid);
-					$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
+					$num = oci_num_rows($stid);	
 					
-
-					if (!$row) {
-						//echo '<br>Status: 404 Not Found<br>';
-					}
-					if ($row['RECORDED_DATA'] != null){
-						$wav = $row['RECORDED_DATA']->load();
-						$decoded = base64_decode($wav);
+					while($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)){
+					
+						if (!$row) {
+							//echo '<br>Status: 404 Not Found<br>';
+						}
+						if ($row['RECORDED_DATA'] != null){
+							$match  = true;
+							$wav = $row['RECORDED_DATA']->load();
+							$decoded = base64_decode($wav);
 				
-						file_put_contents('audio.wav', $decoded);
+							file_put_contents('audio.wav', $decoded);
 				
-						// play the audio
-						echo '<audio controls>';
-						echo '<source src="audio.wav" type="audio/wav">';
-						echo '</audio>';
+							// play the audio
+							echo '<audio controls>';
+							echo '<source src="audio.wav" type="audio/wav">';
+							echo '</audio>';
 			
-						// download the audio
-						echo '<br /><a href="audio.wav" download="'.$sensor_ids[$i2].'.wav">Download audio</a>';
-						//Audio
+							// download the audio
+							echo '<br /><a href="audio.wav" download="'.$sensor_ids[$i2].'.wav">Download audio</a>';
+							//Audio
 						
-					}else if ($row['RECORDED_DATA'] == null){
-						echo "<br />THIS SENSOR HAS NO AUDIO<br />";
+						}else if ($row['RECORDED_DATA'] == null){
+							//echo "<br />THIS SENSOR HAS NO AUDIO<br />";
+						}
+					
 					}
-					echo "<hr>";
+				
+					$num = oci_num_rows($stid);	
+						if ($num == 0) {
+							//echo "<br />THIS SENSOR HAS NO AUDIO<br />";
+						} 
+				
+					if($match){echo "<hr>";}
 				}
 			}
+			
 			if (!$match){
 				echo "NO MATCHING RESULT";		
 			}
