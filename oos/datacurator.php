@@ -137,10 +137,26 @@
 	         $audio_id = generateId($conn, "audio_recordings");
 	         if ($audio_id == 0) {
 	             return;
-	         }
-	         
-            $audio2 = file_get_contents($_FILES['file_image']['tmp_name']);
-            
+	         }      
+            $audio2 = file_get_contents($_FILES['file_audio']['tmp_name']);
+            $audio = base64_encode($audio2);
+            $sql = "INSERT INTO audio_recordings(recording_id, sensor_id, date_created, length, description, recorded_data)
+                         VALUES(".$audio_id.",".$sensor_id.", TO_DATE('".$date_created."', 'DD/MM/YYYY hh24:mi:ss'),".$length.",".$description.",empty_blob())
+                         RETURNING recorded_data INTO :recorded_data";
+         
+                         
+            $result = oci_parse($conn, $sql);
+            $recorded_dataBlob = oci_new_descriptor($conn, OCI_D_LOB);
+            oci_bind_by_name($result, ":recorded_data", $recorded_dataBlob, -1, OCI_B_BLOB);
+            $res = oci_execute($result, OCI_DEFAULT) or die ("Unable to execute query");
+            if ($recorded_dataBlob -> save($audio)) {
+                oci_commit($conn);
+            } else {
+            	    oci_rollback($conn);
+            }
+            oci_free_statement($result);
+            $recorded_dataBlob->free();
+            echo "New audio is added with image_id ->".$audio_id."<br>";   
 	     }
 	    
 	     // ----Upload Image----
@@ -186,7 +202,7 @@
             // value
             $value = $_POST['scalar_value'];
             
-            $sql = "INSERT INTO scalar_data VALUES (".$scalarId.", ".$sensorId.", TO_DATE('".$date."', 'DD/MM/YYYY'),".$value.")";
+            $sql = "INSERT INTO scalar_data VALUES (".$scalarId.", ".$sensorId.", TO_DATE('".$date."', 'DD/MM/YYYY hh24:mi:ss'),".$value.")";
             $stid = oci_parse($conn, $sql);
             $res=oci_execute($stid);
             if (!$res) {

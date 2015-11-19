@@ -1,6 +1,8 @@
 <?php
         /**
-         * Describe this method
+         * Check if the given sensor id is in database.
+         * If the given sensor id is found in database then return 0.
+         * Otherwise return 1.
          */
         function checkSensorId($conn, $sensorId) {
             if (!$sensorId) {
@@ -28,7 +30,9 @@
          */
 
          /**
-          * Describe this method
+          * Insert image data to database (recoreded_data and thumbnail).
+          * First generate an unique image id, then insert image to recoreded_data and resized image to thubnail along with 
+          *   other given data
           */
         function uploadImage($conn, $sensor_id, $date_created, $description) {
  
@@ -46,7 +50,7 @@
             $imageThumbnail = base64_encode($image2Thumbnail);
             
             $sql = "INSERT INTO images (image_id, sensor_id, date_created, description, thumbnail, recoreded_data)
-                      VALUES(".$image_id.", ".$sensor_id.", TO_DATE('".$date_created."', 'DD/MM/YYYY'), '".$description."', empty_blob(), empty_blob())
+                      VALUES(".$image_id.", ".$sensor_id.", TO_DATE('".$date_created."', 'DD/MM/YYYY hh24:mi:ss'), '".$description."', empty_blob(), empty_blob())
                        RETURNING thumbnail, recoreded_data INTO :thumbnail, :recoreded_data";
         
             $result = oci_parse($conn, $sql);
@@ -74,7 +78,7 @@
         // (C) 2015 The PHP Group modified by Yishou
         
         /**
-         * Describe this method, where do you get it? (reference please)
+         * Resize the given image 
          */
         function resizeImage($source){
             list($w, $h, $type) = getimagesize($source['tmp_name']);
@@ -98,7 +102,7 @@
         }
  
         /**
-         * 
+         * Generate an unique id for the corresponding table
          */
         function generateId ($conn, $tableName) {
            // generate an id for the corresponding table
