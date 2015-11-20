@@ -16,7 +16,7 @@
 </head>
 <?php
 	include ("PHPconnectionDB.php");  
-	include ("Subscribe.php");   
+	include ("SubscribeFunctions.php");   
 	//establish connection
 	$conn=connect();
 ?>
