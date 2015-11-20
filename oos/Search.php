@@ -48,7 +48,7 @@
 					$match  = true;
 					$search_string_image = "select thumbnail, recoreded_data from images where SENSOR_ID = ".$sensor_ids[$i2];
 					$search_string_audio = "select recorded_data from audio_recordings where SENSOR_ID = ".$sensor_ids[$i2];
-					$search_string_scalar = "select ID, SENSOR_ID, TO_CHAR(DATE_CREATED, 'DD/MM/YYYY HH24:MI:SS') as DATE_CREATED, VALUE from scalar_data where SENSOR_ID = ".$sensor_ids[$i2];
+					$search_string_scalar = "select SENSOR_ID, TO_CHAR(DATE_CREATED, 'DD/MM/YYYY HH24:MI:SS') as DATE_CREATED, VALUE from scalar_data where SENSOR_ID = ".$sensor_ids[$i2];
 			
 					if(strval($_POST['from']) != "") {
 						$search_string_image = $search_string_image." AND date_created >=  TO_DATE('".$_POST['from']."','DD-MM-YYYY')";
@@ -70,8 +70,8 @@
 						//scalar
 						$i3 = 0;
 						while (oci_fetch($stid)) {
-							echo "<br>".oci_result($stid, 'ID'),",", oci_result($stid, 'SENSOR_ID'),",",oci_result($stid, 'DATE_CREATED'),",",oci_result($stid, 'VALUE');
-							$list = array(oci_result($stid, 'ID'), oci_result($stid, 'SENSOR_ID'),oci_result($stid, 'DATE_CREATED'),oci_result($stid, 'VALUE'));
+							echo "<br>".oci_result($stid, 'SENSOR_ID'),",",oci_result($stid, 'DATE_CREATED'),",",oci_result($stid, 'VALUE');
+							$list = array(oci_result($stid, 'SENSOR_ID'),oci_result($stid, 'DATE_CREATED'),oci_result($stid, 'VALUE'));
 							array_push($lists,$list);
 							$i3 = $i3+1;
 							
