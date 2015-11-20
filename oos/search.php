@@ -45,7 +45,7 @@
 				To: <input type="text" name="to"> <br />
 				<br>
 				<button type="reset">Reset</button>
-				<input type="submit" name="submit_search" value="Submit">
+				<input type="submit" name="submit_search" value="Search">
 			</fieldset>
 		</form>
 	</div>
