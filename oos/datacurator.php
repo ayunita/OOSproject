@@ -227,32 +227,6 @@
 	            }
             }
             echo "Total ".$i." rows inserted<br>";
-        	   /*
-        	   //$scalar_id = generateId($conn, "scalar_data");
-            // sensorId
-            $sensorId = $_POST['sensor_scalar_id'];
- 		      if (checkSensorId($conn, $sensorId) != 0) {
- 		          return;
- 		      }
-            
-            // date
-            $date = $_POST['date_scalar'];
-            
-            // value
-            $value = $_POST['scalar_value'];
-            
-            $sql = "INSERT INTO scalar_data VALUES (".$scalar_id.", ".$sensorId.", TO_DATE('".$date."', 'DD/MM/YYYY hh24:mi:ss'),".$value.")";
-            $stid = oci_parse($conn, $sql);
-            $res=oci_execute($stid);
-            if (!$res) {
-                $err = oci_error($stid); 
-                echo htmlentities($err['message']);
-            }
-	         else{
-		          echo 'Row inserted <br>scalar Id -> '.$scalarId.'<br>';
-	         }
-            oci_free_statement($stid);
-            */
         }
         
         oci_close($conn);
