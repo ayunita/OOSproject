@@ -161,8 +161,6 @@
 							if ($row['RECORDED_DATA'] != null){
 								$wav = $row['RECORDED_DATA']->load();
 								$decoded = base64_decode($wav);
-			
-								file_put_contents('audio.wav', $decoded);
 								
 								// play the audio
 								echo '<audio controls>';
@@ -291,8 +289,6 @@
 							$match  = true;
 							$wav = $row['RECORDED_DATA']->load();
 							$decoded = base64_decode($wav);
-				
-							file_put_contents('audio.wav', $decoded);
 				
 							// play the audio
 							echo '<audio controls>';
