@@ -83,25 +83,10 @@
 	</div>
 	<div id="upload_scalar_btn">Upload Scalar</div>
 	<div id="upload_scalar_panel">
-		<form action="" method="post">
+		<form action="" method="post" enctype="multipart/form-data">
 			<fieldset>
 				<legend>Scalar Information:</legend>
-				Sensor id: <select name="sensor_scalar_id">				
-				<?php
-					$sql = "SELECT sensor_id FROM sensors WHERE sensor_type = 's'";
-					$stid = oci_parse($conn, $sql );
-					$res = oci_execute($stid);
-					
-					while ($row = oci_fetch_array($stid, OCI_ASSOC)) {
-						foreach ($row as $id) {
-							echo "<option value=$id>$id</option>"; 
-						}
-					}	
-				?>
-				</select>
-				<br /><br />
-				Date created: <input type="text" name="date_scalar"> DD/MM/YYYY HH:MM:SS<br /><br />
-				Value: <input type="text" name="scalar_value"> <br /><br />
+				File: <input type="file" name="file_scalar"> <br /><br />
 				<button type="reset">Reset</button>
 				<input type="submit" name="submit_scalar" value="Submit">
 			</fieldset>
@@ -188,8 +173,62 @@
         }
         
         // ----Upload Scalar----
+        // separate a string by another string
+        // http://php.net/manual/en/function.explode.php
         if (isset($_POST["submit_scalar"])) {
-        	   $id = generateId($conn, "scalar_data");
+        	   
+        	   $scalarType = $_FILES['file_scalar']['type'];
+        	   if ($scalarType !=  "text/csv") {
+        	       echo "File Not Found/Extension not allowed, please choose a csv file";
+        	       return;
+        	   }
+        	   $fp = fopen($_FILES['file_scalar']['tmp_name'],'r');
+        	   /*
+        	   while ( ($line = fgets($fp)) !== false) {
+                echo $line."<br>";
+                $pieces = explode(",", $line);
+                echo "Size ->".count($pieces)."<br>";
+                echo $pieces[0]."|".$pieces[1]."|".$pieces[2]."|".$pieces[3]."<br>------<br>";
+            }
+            */
+            $i = 0; // number of rows
+            while (($line = fgets($fp)) != false) {
+            	// check if there are enough values
+            	$pieces = explode(",", $line);
+            	if (count($pieces) != 3) {
+            	    echo "Not enough data<br>";
+            	    continue;
+            	}
+            	// generate an unique scalar_id
+            	$scalar_id = generateId($conn, "scalar_data");
+            	if ($scalar_id == 0) {
+            		 // Unable to generate more unique id, return
+            	    return;
+            	}
+            	// sensor_id
+            	$sensor_id = intval($pieces[0]);
+            	if (checkSensorId($conn, $sensor_id) != 0) {
+            	    continue;
+            	}
+            	// date
+            	$date = $pieces[1];
+            	// value
+            	$value = intval($pieces[2]);
+            	$sql = "INSERT INTO scalar_data VALUES (".$scalar_id.", ".$sensor_id.", TO_DATE('".$date."', 'DD/MM/YYYY hh24:mi:ss'), ".$value.")";
+               $stid = oci_parse($conn, $sql);
+               $res=oci_execute($stid);
+               if (!$res) {
+                   $err = oci_error($stid); 
+                   echo htmlentities($err['message']);
+               }
+	            else{
+		             echo 'Row inserted with scalar Id -> '.$scalar_id.'<br>';
+		             $i++;
+	            }
+            }
+            echo "Total ".$i." rows inserted<br>";
+        	   /*
+        	   //$scalar_id = generateId($conn, "scalar_data");
             // sensorId
             $sensorId = $_POST['sensor_scalar_id'];
  		      if (checkSensorId($conn, $sensorId) != 0) {
@@ -202,7 +241,7 @@
             // value
             $value = $_POST['scalar_value'];
             
-            $sql = "INSERT INTO scalar_data VALUES (".$scalarId.", ".$sensorId.", TO_DATE('".$date."', 'DD/MM/YYYY hh24:mi:ss'),".$value.")";
+            $sql = "INSERT INTO scalar_data VALUES (".$scalar_id.", ".$sensorId.", TO_DATE('".$date."', 'DD/MM/YYYY hh24:mi:ss'),".$value.")";
             $stid = oci_parse($conn, $sql);
             $res=oci_execute($stid);
             if (!$res) {
@@ -213,6 +252,7 @@
 		          echo 'Row inserted <br>scalar Id -> '.$scalarId.'<br>';
 	         }
             oci_free_statement($stid);
+            */
         }
         
         oci_close($conn);
