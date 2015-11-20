@@ -51,14 +51,14 @@
 					$search_string_scalar = "select SENSOR_ID, TO_CHAR(DATE_CREATED, 'DD/MM/YYYY HH24:MI:SS') as DATE_CREATED, VALUE from scalar_data where SENSOR_ID = ".$sensor_ids[$i2];
 			
 					if(strval($_POST['from']) != "") {
-						$search_string_image = $search_string_image." AND date_created >=  TO_DATE('".$_POST['from']."','DD-MM-YYYY')";
-						$search_string_audio = $search_string_audio." AND date_created >=  TO_DATE('".$_POST['from']."','DD-MM-YYYY')";
-						$search_string_scalar = $search_string_scalar." AND date_created >=  TO_DATE('".$_POST['from']."','DD-MM-YYYY')";
+						$search_string_image = $search_string_image." AND date_created >=  TO_DATE('".$_POST['from']."','DD/MM/YYYY HH24:MI:SS')";
+						$search_string_audio = $search_string_audio." AND date_created >=  TO_DATE('".$_POST['from']."','DD/MM/YYYY HH24:MI:SS')";
+						$search_string_scalar = $search_string_scalar." AND date_created >=  TO_DATE('".$_POST['from']."','DD/MM/YYYY HH24:MI:SS')";
 					}
 					if(strval($_POST['to']) != "") {
-						$search_string_image = $search_string_image." AND date_created <=  TO_DATE('".$_POST['to']."','DD-MM-YYYY')";
-						$search_string_audio = $search_string_audio." AND date_created <=  TO_DATE('".$_POST['to']."','DD-MM-YYYY')";
-						$search_string_scalar = $search_string_scalar." AND date_created <=  TO_DATE('".$_POST['to']."','DD-MM-YYYY')";
+						$search_string_image = $search_string_image." AND date_created <=  TO_DATE('".$_POST['to']."','DD/MM/YYYY HH24:MI:SS')";
+						$search_string_audio = $search_string_audio." AND date_created <=  TO_DATE('".$_POST['to']."','DD/MM/YYYY HH24:MI:SS')";
+						$search_string_scalar = $search_string_scalar." AND date_created <=  TO_DATE('".$_POST['to']."','DD/MM/YYYY HH24:MI:SS')";
 					}
 						//echo "<br>".$search_string_image."<br>";
 						//echo "<br>".$search_string_audio."<br>";
