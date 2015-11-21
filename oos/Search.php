@@ -129,9 +129,17 @@
 				if ($lists != null){
 					$fp = fopen('file.csv', 'w');
 
+					// lists size
+					$size = count($lists);
+					$i = 1;
 					foreach ($lists as $fields) {
-						fputs($fp, implode($fields, ',')."\n");
-						
+						// remove new line for the last line
+						if($i != $size){
+							fputs($fp, implode($fields, ',')."\n");
+						} else {
+							fputs($fp, implode($fields, ','));
+						}
+						$i = $i+1;
 					}
 					fclose($fp);
 
