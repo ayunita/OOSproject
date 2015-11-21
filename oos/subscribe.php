@@ -23,6 +23,7 @@
 <body>
 	<h1>Subscription Page</h1>
 	<button onclick="location.href = 'logout.php';">Logout</button>
+	<button onclick="location.href = 'scientist.php';">Back</button>
 	<br>
 	<h2>View Sensors</h2>
 	<p>All Sensors:</p>

@@ -213,7 +213,7 @@
             	// date
             	$date = $pieces[1];
             	// value
-            	$value = intval($pieces[2]);
+            	$value = floatval($pieces[2]);
             	$sql = "INSERT INTO scalar_data VALUES (".$scalar_id.", ".$sensor_id.", TO_DATE('".$date."', 'DD/MM/YYYY hh24:mi:ss'), ".$value.")";
                $stid = oci_parse($conn, $sql);
                $res=oci_execute($stid);

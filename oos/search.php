@@ -25,6 +25,7 @@
 <body>
 	<h1>Search Page</h1>
 	<button onclick="location.href = 'logout.php';">Logout</button>
+	<button onclick="location.href = 'scientist.php';">Back</button>
 	<br>
 	<p>Search Conditions:</p>
 	<div id="search_panel">
