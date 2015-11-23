@@ -3,7 +3,7 @@
  * it removes the null column
  */
 
-CREATE TABLE fact_table
+CREATE TABLE fact_table1
 AS SELECT *
 FROM 
 (
@@ -26,3 +26,39 @@ FROM
 )
 ;
 
+/*
+ * YEARLY
+ */
+SELECT sensor_id, location, year, AVG(AVG), MIN(MIN), MAX(MAX)
+FROM fact_table1
+GROUP BY sensor_id, location, year
+ORDER BY sensor_id, year
+;
+
+
+/*
+ * yearly using rollup
+ */ 
+SELECT sensor_id, year, AVG(AVG), MIN(MIN), MAX(MAX)
+FROM fact_table1
+GROUP BY ROLLUP(sensor_id, year)
+;
+
+
+/*
+ * MONTHLY
+ */ 
+SELECT sensor_id, location, month, year, AVG(AVG), MIN(MIN), MAX(MAX)
+FROM fact_table1
+GROUP BY sensor_id, location, month, year
+ORDER BY sensor_id
+;
+
+/*
+ * DAILY
+ */ 
+SELECT sensor_id, location, day, month, year, AVG(AVG), MIN(MIN), MAX(MAX)
+FROM fact_table1
+GROUP BY sensor_id, location, day, month, year
+ORDER BY sensor_id
+;
