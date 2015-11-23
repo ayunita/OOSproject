@@ -36,6 +36,7 @@
 	
 			if($isFound == false){
 				echo 'Username and password do not match.';
+				echo '<br /><a href="index.html">Back</a>';
 			} else {
 				echo 'Login successful...';
 				$_SESSION['role'] = $role;
