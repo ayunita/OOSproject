@@ -149,6 +149,7 @@ USER MANUAL
 2. the sensor type and/or location, and
 3. a time period
 4. click <kbd>search</kbd> to search the data that you have subscribed.
+5. if a searching condition is left empty, then all data on any values of that condition is fetched
 
 #### download data
 1. click "download" to download the data from database.
