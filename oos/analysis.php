@@ -1,12 +1,4 @@
-<?php
-	session_start();
-	if($_SESSION['role'] != 's'){
-		header("Location: restriction.html");
-		exit();
-	}
-
-?>
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <script src="jquery-1.11.3.js" type="text/javascript"></script>
 <script src="style.js" type="text/javascript"></script>
@@ -31,10 +23,6 @@
 		<form action="" method="post">
 			<fieldset>
 				<legend>Scalar Information:</legend>
-				Sensor id: <input type="text" name="sensor_analysis_id"> <br /> <br />
-				Location: <input type = "text" name = "location_analysis"> <br /> <br />
-				Date: <input type="text" name="date_analysis">DD/MM/YYYY HH:MM:SS <br /> <br />
-				TO Date: <input type="text" name="date_analysis">DD/MM/YYYY HH:MM:SS <br /> <br />
 				<button type="reset">Reset</button>
 				<input type="submit" name="upload_analysis" value="Submit">
 				<button type = "submit" name = "yearly" value = "yearly">Yearly</button>
@@ -53,7 +41,7 @@
 // Use this block of code every time 
          // Drop fact table (if any)
          echo "Drop Fact Table <br>";
-			$query = "DROP Table fact_table";
+			$query = "DROP Table fact_table1";
 			$result = oci_parse($conn, $query);
 			$res  = oci_execute($result);
 			if ($res) {
@@ -70,9 +58,19 @@
 			// and report the corresponding average, min, and max values of a sensor.
 			echo "Create Fact Table<br>";
 			
-			$query = "Create Table fact_table AS SELECT sensors.sensor_id, sensors.location, scalar_data.date_created, scalar_data.value ".
-			         "FROM sensors, scalar_data ".
-			         "WHERE sensors.sensor_id = scalar_data.sensor_id ";
+			$query = "CREATE TABLE fact_table1 AS SELECT * ".
+			         "FROM ( ".
+			         "SELECT s.sensor_id, s.location, ".
+			         "TO_CHAR(d.date_created, 'YYYY') as year, ".
+                  "TO_CHAR(date_created, 'Q') as quarter, ".
+                  "TO_CHAR(date_created, 'Mon') as month, ".
+                  "TO_CHAR(date_created, 'W') as week, ".
+                  "TO_CHAR(date_created, 'DD') as day, ".
+                  "d.value ".
+                  "FROM sensors s, scalar_data d ".
+                  "WHERE s.sensor_id = d.sensor_id ".
+                  "AND s.sensor_type = 's' )";
+			         
 			$result = oci_parse($conn, $query);
 			$res  = oci_execute($result);
 			if ($res) {
@@ -83,71 +81,80 @@
 			}
 			oci_free_statement($result);
 // -----------------------------------------------------------------------
-$query = "INSERT INTO fact_table VALUES (2, 'A', TO_DATE('01-NOV-15', 'DD/MM/YY'), 20)";
-			$result = oci_parse($conn, $query);
-			$res  = oci_execute($result);
-			if ($res) {
-				oci_commit($conn);
-			} else {
-				$e = oci_error($result);
-				echo "Error Selecting data " . $e['message'] . "<br>";
-			}
-			oci_free_statement($result);
-			
-			
-			
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['yearly'])) {
-      echo "Year <br>";
-      $date_format ="TO_CHAR(date_created, 'YYYY') as year";
-		$date_rollup ="TO_CHAR(date_created, 'YYYY')";
-		$date_group = "year";
+      echo "Yearly <br>";
+		$query = "SELECT * ".
+		         "FROM ( ".
+               "SELECT sensor_id, location, year, AVG(value), MIN(value), MAX(value) ".
+               "FROM fact_table1 ".
+               "GROUP BY CUBE(sensor_id, location, year) ) ".
+               "WHERE sensor_id IS NOT NULL ".
+               "AND location IS NOT NULL ".
+               "AND year IS NOT NULL";
+      $type = 1;
+      $n = 6;
     }
     elseif(isset($_POST['quarterly'])) {
     	echo "Quarterly <br>";
+    	$query = "SELECT * ".
+               "FROM ( ".
+               "SELECT sensor_id, location, quarter, year, AVG(value), MIN(value), MAX(value) ".
+               "FROM fact_table1 ".
+               "GROUP BY CUBE(sensor_id, location, quarter, year) ) ".
+               "WHERE sensor_id IS NOT NULL ".
+               "AND location IS NOT NULL ".
+               "AND quarter IS NOT NULL ".
+               "AND year IS NOT NULL";
+      $type = 2;
+      $n = 7;
     }
     elseif(isset($_POST['monthly'])) {
-      echo "Month <br>";
-      $date_format = "TO_CHAR(date_created, 'YYYY') as year, TO_CHAR(date_created, 'Mon') as month";
-		$date_rollup = "TO_CHAR(date_created, 'YYYY'), TO_CHAR(date_created, 'Mon')";
-		$date_group = "month";
+      echo "Monthly <br>";
+      $query = "SELECT * ".
+               "FROM ( ".
+               "SELECT sensor_id, location, month, year, AVG(value), MIN(value), MAX(value) ".
+               "FROM fact_table1 ".
+               "GROUP BY CUBE(sensor_id, location, month, year) ) ".
+               "WHERE sensor_id IS NOT NULL ".
+               "AND location IS NOT NULL ".
+               "AND month IS NOT NULL ".
+               "AND year IS NOT NULL";
+      $type = 3;
+      $n = 7;
     }
     elseif(isset($_POST['weekly'])) {
     	echo "Weekly <br>";
-    	$date_format = "TO_CHAR(date_created, 'YYYY') as year, TO_CHAR(date_created, 'WW') as week";
-		$date_rollup = "TO_CHAR(date_created, 'YYYY'), TO_CHAR(date_created, 'WW')";
-		$date_group = "week";
+    	$query = "SELECT * ".
+    	         "FROM ( ".
+    	         "SELECT sensor_id, location, week, month, year, AVG(value), MIN(value), MAX(value) ".
+    	         "FROM fact_table1 ".
+    	         "GROUP BY CUBE(sensor_id, location, week, month, year) ) ".
+    	         "WHERE sensor_id IS NOT NULL ".
+    	         "AND location IS NOT NULL ".
+    	         "AND week IS NOT NULL ".
+    	         "AND month IS NOT NULL ".
+    	         "AND year IS NOT NULL";
+    	$type = 4;
+    	$n = 8;
     }
     elseif(isset($_POST['daily'])) {
     	echo "Daily <br>";
-		$date_format = "TO_CHAR(date_created, 'YYYY') as year, TO_CHAR(date_created, 'Mon') as month, TO_CHAR(date_created, 'DD') as day";			
-		$date_rollup = "TO_CHAR(date_created, 'YYYY'), TO_CHAR(date_created, 'Mon'), TO_CHAR(date_created, 'DD')";
-		$date_group = "day";
+    	$query = "SELECT * ".
+    	         "FROM ( ".
+    	         "SELECT sensor_id, location, day, month, year, AVG(value), MIN(value), MAX(value) ".
+    	         "FROM fact_table1 ".
+    	         "GROUP BY CUBE(sensor_id, location, day, month, year) ) ".
+    	         "WHERE sensor_id IS NOT NULL ".
+    	         "AND location IS NOT NULL ".
+    	         "AND day IS NOT NULL ".
+    	         "AND month IS NOT NULL ".
+    	         "AND year IS NOT NULL";
+    	$type = 5;
+    	$n = 8;
     }
     
-    /*
-      sensor id, location, and time(according to the values of column date), and report the corresponding average, min, and max values of a sensor.
-    */
-    /*
-    $query = "SELECT scalar_data.date_created, avg(scalar_data.value), max(scalar_data.value), min(scalar_data.value) ".
-             "FROM scalar_data, sensors ".
-             "WHERE scalar_data.sensor_id = sensors.sensor_id ".
-             "GROUP BY ROLLUP(year from scalar_data.date_created)";
-    */
-    /*
-    // Fact Table
-    			$query = "Create Table fact_table AS SELECT sensors.sensor_id, sensors.location, scalar_data.date_created, scalar_data.value ".
-			         "FROM sensors, scalar_data ".
-			         "WHERE sensors.sensor_id = scalar_data.sensor_id ";
-    */
-    $query = "SELECT sensor_id, location, date_created, avg(value), max(value), min(value) From fact_table GROUP BY ROLLUP(year from date_created)";
-    
-    $query = "SELECT sensor_id, location, date_created, avg(value), max(value), min(value) ".
-             "FROM fact_table ".
-             "GROUP BY sensor_id, location, date_created ".
-             "ORDER BY sensor_id, location, date_created ";
-             
-    				$stid = oci_parse($conn, $query);
+    			$stid = oci_parse($conn, $query);
 				$res  = oci_execute($stid);
 				if ($res) {
 					oci_commit($conn);
@@ -156,151 +163,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					echo "Error Selecting data " . $e['message'] . "<br>";
 				}
 				$number_columns = oci_num_fields($stid);
-				echo "Number Col -> ".$number_columns."<br>";
-				for ($i = 1; $i <= $number_columns; ++$i) {
-					echo "| ".strtolower(oci_field_name($stid, $i))." ";
-				}
-				echo " |";
-				echo "<br>";
 				while ($row = oci_fetch_array($stid, OCI_NUM)) {
-					for ($i = 0; $i < $number_columns; $i += 6) {
-						echo "----------------------------<br>".
-						     "sensor_id -> ".$row[$i]."<br>".
-						     "location -> ".$row[$i+1]."<br>".
-						     "date -> ".$row[$i+2]."<br>".
-						     "avg -> ".$row[$i+3]."<br>".
-						     "max -> ".$row[$i+4]."<br>".
-						     "min -> ".$row[$i+5]."<br>";
+					for ($i = 0; $i < $number_columns; $i += $type + 5) {
+                 echo "----------------------------------<br>".
+                      "Sensor ID	-> ".$row[$i]."<br>".
+                      "Location -> ".$row[$i+1]."<br>";
+                      if ($type == 1) {
+                      	// Yearly
+                        echo "Year -> ".$row[$i+2]."<br>".
+                             "Average -> ".$row[$i+3]."<br>".
+                             "Minimum -> ".$row[$i+4]."<br>".
+                             "Maximum -> ".$row[$i+5]."<br>";
+                      } elseif($type == 2) {
+                      	// Quarterly
+                      	echo "Quarter -> ".$row[$i+2]."<br>".
+                      	     "Year -> ".$row[$i+3]."<br>".
+                      	     "Average -> ".$row[$i+4]."<br>".
+                      	     "Minimum -> ".$row[$i+5]."<br>".
+                      	     "Maximum -> ".$row[$i+6]."<br>";
+                      } elseif($type == 3) {
+                      	// Monthly
+                      	echo "Month -> ".$row[$i+2]."<br>".
+                      	     "Year -> ".$row[$i+3]."<br>".
+                      	     "Average -> ".$row[$i+4]."<br>".
+                      	     "Minimum -> ".$row[$i+5]."<br>".
+                      	     "Maximum -> ".$row[$i+6]."<br>";
+                      } elseif($type == 4) {
+                      	// Weekly
+                      	echo "Week -> ".$row[$i+2]."<br>".
+                      	     "Month -> ".$row[$i+3]."<br>".
+                      	     "Year -> ".$row[$i+4]."<br>".
+                      	     "Average -> ".$row[$i+5]."<br>".
+                      	     "Minimum -> ".$row[$i+6]."<br>".
+                      	     "Maximum -> ".$row[$i+7]."<br>";
+                      } elseif($type == 5) {
+                      	// Daily
+                      	echo "Day -> ".$row[$i+2]."<br>".
+                      	     "Month -> ".$row[$i+3]."<br>".
+                      	     "Year -> ".$row[$i+4]."<br>".
+                      	     "Average -> ".$row[$i+5]."<br>".
+                      	     "Minimum -> ".$row[$i+6]."<br>".
+                      	     "Maximum -> ".$row[$i+7]."<br>";
+                      }
 					}
-		
 				}
-	
-	echo "<br><br>------------<br><br>";
-	$query = "SELECT avg(value) FROM fact_table";
-	    				$stid = oci_parse($conn, $query);
-				$res  = oci_execute($stid);
-				if ($res) {
-					oci_commit($conn);
-				} else {
-					$e = oci_error($stid);
-					echo "Error Selecting data " . $e['message'] . "<br>";
-				}
-				
-				$number_columns = oci_num_fields($stid);
-				echo "Number Col -> ".$number_columns."<br>";
-				for ($i = 1; $i <= $number_columns; ++$i) {
-					echo "| ".strtolower(oci_field_name($stid, $i))." ";
-				}
-				echo " |";
-				echo "<br>";
-				
-				while ($row = oci_fetch_array($stid, OCI_NUM)) {
-					for ($i = 0; $i < $number_columns; $i += 1) {
-						echo "----------------------------<br>".
-						     "test avg -> ".$row[$i]."<br>";
-					}
-				}
-				
-		
-				
-	
 				oci_close($conn);
-    /*
-    
-     "SELECT EXTRACT(year FROM date_created), avg(sd.value), max(sd.value), min(sd.value) ".
-                "FROM scalar_data sd, subscriptions sc ".
-                "WHERE sd.sensor_id = '"+Sensor+"' ".
-                "GROUP BY EXTRACT(year FROM date_created) ".
-                "ORDER BY EXTRACT(year FROM date_created)";
-                */
- 
-    
-    
-    /*
-    				$query = "SELECT "
-				.$patient_format.$test_format.$date_format
-				." ,COUNT(*) as images "
-				."FROM fact_table "
-				."GROUP BY ROLLUP ("
-				.$patient_format.$test_format.$date_rollup
-				.") ";
-	
-				$stid = oci_parse($conn, $query);
-				$res  = oci_execute($stid);
-				if ($res) {
-					oci_commit($conn);
-				} else {
-					$e = oci_error($stid);
-					echo "Error Selecting data " . $e['message'] . "<br>";
-				}
-				*/
 }
-/*
-if($_GET){
-    if(isset($_GET['year'])){
-        echo "You clicked Year <br>";
-    }elseif(isset($_GET['month'])){
-        echo "You clicked Month <br>";
-    }
-}
-*/
-/*
-// -----------------------------------------------------------------------
-// FACT TABLE
-// Use this block of code every time 
-         // Drop fact table (if any)
-			$query = "DROP VIEW fact_table";
-			$result = oci_parse($conn, $query);
-			$res  = oci_execute($result);
-			if ($res) {
-				oci_commit($conn);
-			} else {
-				$e = oci_error($result);
-				echo "Error Selecting data ".$e['message']."<br>";
-			}
-			oci_free_statement($result);
-			
-			// Create fact_table to speed up OLAP queries for data_cube/roll-up
-			// Contains data relevant to the queries
-			// sensor id, location, and time(according to the values of column date), 
-			// and report the corresponding average, min, and max values of a sensor.
-			
-			$query = "Create View fact_table AS SELECT sensors.sensor_id, sensors.location, scalar_data.date_created, scalar_data.value ".
-			         "FROM sensors, scalar_data "
-			         "WHERE sensors.sensor_id = scalar_data.sensor_id ";
-			$result = oci_parse($conn, $query);
-			$res  = oci_execute($result);
-			if ($res) {
-				oci_commit($conn);
-			} else {
-				$e = oci_error($result);
-				echo "Error Selecting data " . $e['message'] . "<br>";
-			}
-			oci_free_statement($result);
-// -----------------------------------------------------------------------
-https://github.com/mswillia123/CMPUT391/blob/master/ris/dataAnalysisModule.php
-				switch ($period) {
-					case "month":
-						$date_format = "TO_CHAR(date_created, 'YYYY') as year, TO_CHAR(date_created, 'Mon') as month";
-						$date_rollup = "TO_CHAR(date_created, 'YYYY'), TO_CHAR(date_created, 'Mon')";
-						break;
-					case "week":
-						//if month is required along with week, use the following instead
-						//$date_format = "TO_CHAR(R.date_created, 'YYYY') as year, TO_CHAR(R.date_created, 'Mon') as month, TO_CHAR(R.date_created, 'W') as week";
-						//$date_rollup = "TO_CHAR(R.date_created, 'YYYY'), TO_CHAR(R.date_created, 'Mon'), TO_CHAR(R.date_created, 'W')";
-						$date_format = "TO_CHAR(date_created, 'YYYY') as year, TO_CHAR(date_created, 'WW') as week";
-						$date_rollup = "TO_CHAR(date_created, 'YYYY'), TO_CHAR(date_created, 'WW')";
-						break;
-					case "year":
-						$date_format ="TO_CHAR(date_created, 'YYYY') as year";
-						$date_rollup ="TO_CHAR(date_created, 'YYYY')";
-						break;
-					default: //as per Dr. Yuan, day/all should not be an option. This code can be uncommented if day/all report is required
-						//$date_format = "TO_CHAR(date_created, 'YYYY') as year, TO_CHAR(date_created, 'Mon') as month, TO_CHAR(date_created, 'DD') as day";			
-						//$date_rollup = "TO_CHAR(date_created, 'YYYY'), TO_CHAR(date_created, 'Mon'), TO_CHAR(date_created, 'DD')";
-				}
-			
-			
-			oci_close($conn);
-*/
 ?>
