@@ -19,6 +19,9 @@
                 ?>
 			</fieldset>
 		</form>
-		<a href="login.html">Back</a>
+		<br />
+		<a href="http://consort.cs.ualberta.ca/~yunita/OOSproject/document/help.html#login-module">Help</a>
+		<br /><br />
+		<a href="index.html">Back</a>
     </body>
 </html>

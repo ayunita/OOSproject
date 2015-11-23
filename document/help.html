@@ -1,0 +1,225 @@
+<h2>OOS PROJECT</h2>
+
+<p>An Ocean Observation system (OOS) is a computer information system that stores and processes different types of data for an ocean observatory.</p>
+
+<hr />
+
+<h2>INSTALLATION GUIDE</h2>
+
+<h3>Setup project:</h3>
+
+<ol>
+<li>clone this project under /compsci/webdocs/ccid/web_docs</li>
+<li>open command line, and type:
+<code>sh
+chmod 755 web_docs
+chmod 755 makefile
+makefile
+</code>
+or
+<code>sh
+chmod 755 web_docs
+chmod 755 makefile
+makefile
+</code></li>
+</ol>
+
+<h3>Setup database:</h3>
+
+<ol>
+<li>open command line, and type:
+<code>sh
+sqlplus
+username
+password
+setup.sql
+sql_insert.sql
+</code></li>
+</ol>
+
+<h3>Setup connection:</h3>
+
+<p>change the username and password under PHPConnectionDB.php
+$conn = oci_connect('username', 'password');</p>
+
+<hr />
+
+<h2>USER MANUAL</h2>
+
+<blockquote>
+  <p>Navigate this page to:
+: <a href="#login-module">1. login module</a>
+: <a href="#sensor-and-user-management-module">2. sensor and user management module</a>
+: <a href="#subscribe-module">3. subscribe module</a>
+: <a href="#uploading-module">4. uploading module</a> 
+: <a href="#search-module">5. search module</a> 
+: <a href="#data-analysis-module">6. data analysis</a></p>
+</blockquote>
+
+<h3 id="login-module">Login module</h3>
+
+<h4>login</h4>
+
+<ol>
+<li>enter your username and password, and click <kbd>login</kbd>.</li>
+<li>user with "administrator" privileges will be sent to "administrator" page.</li>
+<li>user with "data curator" privileges will be sent to "data curator" page.</li>
+<li>user with "scientist" privileges will be sent to "scientist" page.</li>
+</ol>
+
+<h4>modify account</h4>
+
+<ol>
+<li>click on "Modify Account".</li>
+<li>enter the username, and click <kbd>search</kbd>.</li>
+<li>enter the data that you want to modify, and click <kbd>modify</kbd>.</li>
+</ol>
+
+<h3 id="sensor-and-user-management-module">Sensor and user management module</h3>
+
+<h4>add sensor</h4>
+
+<ol>
+<li>enter the location of the sensor.</li>
+<li>choose the type of the sensor (audio, image, or scalar).</li>
+<li>enter the description of the sensor.</li>
+<li>click <kbd>submit</kbd> to add the new sensor with the information that has been specified.</li>
+</ol>
+
+<h4>delete sensor</h4>
+
+<ol>
+<li>select the sensor id from the dropdown list.</li>
+<li>click <kbd>delete</kbd> to remove the sensor from the database.</li>
+</ol>
+
+<h4>add person</h4>
+
+<ol>
+<li>enter the person's first name.</li>
+<li>enter the person's last name.</li>
+<li>enter the person's address.</li>
+<li>enter the person's email.</li>
+<li>enter the person's phone number.</li>
+<li>click <kbd>submit</kbd> to add the new person with the information that has been specified.</li>
+</ol>
+
+<h4>add user</h4>
+
+<ol>
+<li>select the person id from the dropdown list.</li>
+<li>enter the user's username.</li>
+<li>enter the user's password.</li>
+<li>choose the role of the user.</li>
+<li>click <kbd>submit</kbd> to add the new user with the information that has been specified.</li>
+</ol>
+
+<h4>modify person</h4>
+
+<ol>
+<li>select person id from dropdown list, and click "search".</li>
+<li>enter the new information to the field that you wish to change.</li>
+<li>click <kbd>edit</kbd> to update the existing person information.</li>
+</ol>
+
+<h4>modify user</h4>
+
+<ol>
+<li>select username from dropdown list, and click "search".</li>
+<li>enter the new information to the field that you wish to change.</li>
+<li>click <kbd>edit</kbd> to update the existing person information.</li>
+</ol>
+
+<h4>delete person</h4>
+
+<ol>
+<li>select the person id from the dropdown list.</li>
+<li>click <kbd>delete</kbd> to remove the person from the database.</li>
+</ol>
+
+<h4>delete user</h4>
+
+<ol>
+<li>select the username from the dropdown list.</li>
+<li>click <kbd>delete</kbd> to remove the user from the database.</li>
+</ol>
+
+<h3 id="subscribe-module">Subscribe module</h3>
+
+<h4>subscribe sensor</h4>
+
+<ol>
+<li>enter the sensor id.</li>
+<li>click <kbd>subscribe</kbd> to add the sensor with this sensor id to your subscription.</li>
+</ol>
+
+<h4>unsubscribe sensor</h4>
+
+<ol>
+<li>enter the sensor id.</li>
+<li>click <kbd>unsubscribe</kbd> to remove the sensor with this sensor id from your subscription.</li>
+</ol>
+
+<h3 id="uploading-module">Uploading module</h3>
+
+<h4>upload audio</h4>
+
+<ol>
+<li>select the sensor id from the dropdown list.</li>
+<li>enter the date of the audio created (with format DD/MM/YYYY HH:MM:SS).</li>
+<li>enter the length of the audio.</li>
+<li>enter the description of the audio.</li>
+<li>choose the audio file (.wav) from the local storage.</li>
+<li>click <kbd>submit</kbd> to upload the audio data to the database.</li>
+</ol>
+
+<h4>upload image</h4>
+
+<ol>
+<li>select the sensor id from the dropdown list.</li>
+<li>enter the date of the image created (with format DD/MM/YYYY HH:MM:SS).</li>
+<li>enter the description of the image.</li>
+<li>choose the audio file (.jpg) from the local storage.</li>
+<li>click <kbd>submit</kbd> to upload the image data to the database.</li>
+</ol>
+
+<h4>upload scalar data</h4>
+
+<ol>
+<li>choose the file that contains scalar data (.csv) from the local storage.</li>
+<li>click <kbd>submit</kbd> to upload the scalar data to the database.</li>
+</ol>
+
+<h3 id="search-module">Search module</h3>
+
+<h4>search data</h4>
+
+<ol>
+<li>enter the keyword. and/or </li>
+<li>the sensor type and/or location, and</li>
+<li>a time period</li>
+<li>click <kbd>search</kbd> to search the data that you have subscribed.</li>
+</ol>
+
+<h4>download data</h4>
+
+<ol>
+<li>click "download" to download the data from database.</li>
+</ol>
+
+<h3 id ="data-analysis-module">Data analysis module</h3>
+
+<hr />
+
+<h2>CONTRIBUTIONS</h2>
+
+<ul>
+<li>The PHP Group, http://php.net/manual/en</li>
+<li>ircmaxell, http://stackoverflow.com/questions/3056287/oracle-blob-as-img-src-in-php-page</li>
+</ul>
+
+<hr />
+
+<h2>LICENSE</h2>
+
+<p>OOSproject is licensed under GPLv3</p>

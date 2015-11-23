@@ -14,14 +14,14 @@ INSTALLATION GUIDE
 2. open command line, and type:
 ```sh
 chmod 755 web_docs
-chmod 755 oos.sh
-oos.sh
+chmod 755 makefile
+makefile
 ```
 or
 ```sh
 chmod 755 web_docs
-chmod 755 oos.sh
-./oos.sh
+chmod 755 makefile
+makefile
 ```
 
 ### Setup database:

@@ -52,6 +52,8 @@
 	</div>
 	
 	
+	<br /><br />
+	<a href="http://consort.cs.ualberta.ca/~yunita/OOSproject/document/help.html#search-module">Help</a>
 
 	<?php
 		search($conn);

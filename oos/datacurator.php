@@ -7,7 +7,7 @@
 ?>
 <?php
 	include ("PHPconnectionDB.php");   
-	include ("datacuratorFunction.php");
+	include ("DataCurator.php");
 	//include ("resizeImage.php");   
 	//establish connection
 	$conn=connect();
@@ -92,6 +92,10 @@
 			</fieldset>
 		</form>
 	</div>
+	
+	<br /><br />
+	<a href="http://consort.cs.ualberta.ca/~yunita/OOSproject/document/help.html#uploading-module">Help</a>
+	
 	<?php
 	     // ----Upload Audio----
         if (isset($_POST["submit_audio"])) {

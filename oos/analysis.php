@@ -39,5 +39,7 @@
 			</fieldset>
 		</form>
 	</div>
+	<br /><br />
+	<a href="http://consort.cs.ualberta.ca/~yunita/OOSproject/document/help.html#data-analysis-module">Help</a>
 </body>
 </html>

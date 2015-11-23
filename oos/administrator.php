@@ -220,6 +220,8 @@
 	?>
 	
 	</span>
+	<br /><br />
+	<a href="http://consort.cs.ualberta.ca/~yunita/OOSproject/document/help.html#sensor-and-user-management-module">Help</a>
 		
 </body>
 </html>

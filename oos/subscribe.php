@@ -73,7 +73,9 @@
 	</div>
 
 	<span style="color:green">
-	
+	<br /><br />
+
+	<a href="http://consort.cs.ualberta.ca/~yunita/OOSproject/document/help.html#subscribe-module">Help</a>
 	
 	<?php 
 	

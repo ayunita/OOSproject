@@ -31,6 +31,5 @@
 	<br><br>
 	<button onclick="location.href = 'logout.php';">Logout</button>
 
-
 </body>
 </html>
