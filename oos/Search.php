@@ -11,7 +11,8 @@
 		}
 		if (isset($_POST["submit_search"]) && $valid){	
 		
-			// select sensors that satify ID, type, location and description
+			// select sensors that satify ID(that are subscribed byt the current user), type, location
+			// and description if they are not empty. if empty, search all sensors on such search condition
 			$sql = "SELECT * FROM subscriptions NATURAL JOIN sensors WHERE PERSON_ID = ".$_SESSION['person_id'];
 			
 			if(strval($_POST['type']) != "") {
@@ -42,7 +43,7 @@
 			if ($i > 0 ){
 				$lists = array();
 				
-				
+				// after finding all the sensors that statisfy the conditions, search image, audio and scalar that are associated with the sensor
 				for ($i2 = 0; $i2 < $i; $i2++){
 					echo "<br />Sensors that satisfy the conditions:<br>Sensor ID: ".$sensor_ids[$i2]."<br />";
 					$match  = true;
@@ -58,7 +59,7 @@
 					$stid = oci_parse($conn, $search_string_scalar);
 					oci_execute($stid);
 						
-					//scalar
+					//print out and save into an array each scalar
 					$i3 = 0;
 					while (oci_fetch($stid)) {
 						$list = array(oci_result($stid, 'SENSOR_ID'),date(oci_result($stid, 'DATE_CREATED')),oci_result($stid, 'VALUE'));
@@ -71,7 +72,7 @@
 					//echo $i3."<br/><br/><br/><br/>";
 					oci_free_statement($stid);
 
-					//fetch image
+					//fetch image, show thumbnail and allow for downloading
 					$stid = oci_parse($conn,$search_string_image);
 					oci_execute($stid);
 												
@@ -95,7 +96,7 @@
 					}
 					$num = oci_num_rows($stid);							
 						
-					//fetch audio
+					//fetch audio, display audio player in the page and allow for downloading
 					$stid = oci_parse($conn, $search_string_audio);
 					oci_execute($stid);
 							
@@ -125,7 +126,8 @@
 					echo "<hr>";
 					
 				}
-
+				
+				// if there are scalar data, output to a cvs file
 				if ($lists != null){
 					$fp = fopen('file.csv', 'w');
 
@@ -138,7 +140,7 @@
 				}				
 			}
 			
-
+			// if there are no sensors that satify the conditions, search again without description
 			if ($i == 0 ){
 
 				// select sensors that satify ID, type, location
@@ -169,7 +171,7 @@
 					$search_string_image = "select thumbnail, recoreded_data from images where SENSOR_ID = ".$sensor_ids[$i2]." AND date_created between TO_DATE('".$_POST['from']."','DD/MM/YYYY hh24:mi:ss') and TO_DATE('".$_POST['to']."','DD/MM/YYYY hh24:mi:ss')";;
 					$search_string_audio = "select recorded_data from audio_recordings where SENSOR_ID = ".$sensor_ids[$i2]." AND date_created between TO_DATE('".$_POST['from']."','DD/MM/YYYY hh24:mi:ss') and TO_DATE('".$_POST['to']."','DD/MM/YYYY hh24:mi:ss')";;
 			
-
+					// search audio and image with according description
 					if(strval($_POST['description']) != "") {
 						$search_string_image = $search_string_image." AND description like '%".$_POST['description']."%'";
 						$search_string_audio = $search_string_audio." AND description like '%".$_POST['description']."%'";
@@ -187,6 +189,7 @@
 						//echo "<br />THIS SENSOR HAS NO IMAGE<br />";
 					} 
 					
+					// fetch image, show thumbnails and allow for downloading
 					while($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)){
 						if ($row['THUMBNAIL'] != null && $row['RECOREDED_DATA'] != null){
 							$match  = true;
@@ -214,7 +217,7 @@
 					} 
 					//oci_free_statement($stid);
 					
-					//audio
+					// fetch audio, display audio player and allow for downloading
 					$stid = oci_parse($conn, $search_string_audio);
 					oci_execute($stid);
 					$num = oci_num_rows($stid);	
