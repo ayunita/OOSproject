@@ -155,6 +155,12 @@ USER MANUAL
 
 ### Data analysis module
 
+#### display report
+1. click on <kbd>yearly</kbd> to display the yearly report.
+2. click on <kbd>quarterly</kbd> to display the quarterly report.
+3. click on <kbd>monthly</kbd> to display the monthly report.
+4. click on <kbd>weekly</kbd> to display the weekly report.
+5. click on <kbd>daily</kbd> to display the daily report.
 
 ----------
 
