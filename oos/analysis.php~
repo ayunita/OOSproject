@@ -44,5 +44,7 @@
 </body>
 </html>
 <?php
+$id = $_SESSION['person_id'];
+	echo "id -> ".$id."<br>";
 	generateReport($conn);
 ?>
