@@ -32,14 +32,15 @@
 		<form action="" method="post">
 			<fieldset>
 				<legend>Sensor Information:</legend>
-				Location: <input type="text" name="location"> <br /> <br />
-				Type: <input type="radio" name="types" value="a"> Audio</input> <input
-					type="radio" name="types" value="i"> Image</input> <input
-					type="radio" name="types" value="s"> Scalar</input> <br /> <br />
-				Description: <input type="text" name="description"> <br />
-				<br />
-				<button type="reset">Reset</button>
-				<input type="submit" name="submit_sensor" value="Submit">
+				<table class = "_form">
+				<tr><td>Location:</td><td><input type="text" name="location"></td></tr>
+				<tr><td>Type:</td><td><input type="radio" name="types" value="a"> Audio</input>
+							<br /><input type="radio" name="types" value="i"> Image</input>
+							<br /><input type="radio" name="types" value="s"> Scalar</input></td></tr>
+				<tr><td>Description:</td><td><input type="text" name="description"></td></tr>
+				<tr align="right"><td></td><td><button type="reset">Reset</button>
+				<input type="submit" name="submit_sensor" value="Submit"></td></tr>
+				</table>
 			</fieldset>
 		</form>
 	</div>
@@ -71,41 +72,45 @@
 		<form action="" method="post">
 			<fieldset>
 				<legend>New User Information:</legend>
-				Person id: <select name="user_id">
-				
-				<?php
-					$sql = "SELECT person_id FROM persons";
-					$stid = oci_parse($conn, $sql );
-					$res = oci_execute($stid);
+				<table class= "_form">
+					<tr><td>Person id:</td><td><select name="user_id">
 					
-					while ($row = oci_fetch_array($stid, OCI_ASSOC)) {
-						foreach ($row as $id) {
-							echo "<option value=$id>$id</option>"; 
+					<?php
+						$sql = "SELECT person_id FROM persons";
+						$stid = oci_parse($conn, $sql );
+						$res = oci_execute($stid);
+						
+						while ($row = oci_fetch_array($stid, OCI_ASSOC)) {
+							foreach ($row as $id) {
+								echo "<option value=$id>$id</option>"; 
+							}
 						}
-					}
-				?>
-				
-				</select><br /> <br />
-				Username: <input type="text" name="username"> <br /> <br />
-				Password: <input type="text" name="password"> <br /> <br />
-				Role: <input type="radio" name="roles" value="a">
-				Administrator</input> <input type="radio" name="roles" value="d">
-				Data Curator</input> <input type="radio" name="roles" value="s">
-				Scientist</input> <br /> <br />
-				<button type="reset">Reset</button>
-				<input type="submit" name="submit_user" value="Submit">
+					?>
+					
+					</select></td></tr>
+					<tr><td>Username:</td><td><input type="text" name="username"></td></tr>
+					<tr><td>Password:</td><td><input type="text" name="password"></td></tr>
+					<tr><td>Role:</td><td><input type="radio" name="roles" value="a">Administrator
+								<br /></input> <input type="radio" name="roles" value="d">Data Curator
+								<br /></input> <input type="radio" name="roles" value="s">Scientist
+								</input></td></tr>
+					<tr align="right"><td></td><td><button type="reset">Reset</button>
+					<input type="submit" name="submit_user" value="Submit"></td></tr>
+				</table>
 			</fieldset>
 		</form>		
 		<form action="" method="post">
 			<fieldset>
 				<legend>New Person Information:</legend>
-				Firstname: <input type="text" name="firstname"> <br />
-				<br /> Lastname: <input type="text" name="lastname"> <br />
-				<br /> Address: <input type="text" name="address"> <br />
-				<br /> Email: <input type="text" name="email"> <br /> <br />
-				Phone: <input type="text" name="phone"> <br /> <br />
-				<button type="reset">Reset</button>
-				<input type="submit" name="submit_person" value="Submit">
+				<table class = "_form">
+					<tr><td>Firstname:</td><td><input type="text" name="firstname"></td></tr>
+					<tr><td>Lastname:</td><td><input type="text" name="lastname"></td></tr>
+					<tr><td>Address:</td><td><input type="text" name="address"></td></tr>
+					<tr><td>Email:</td><td><input type="text" name="email"></td></tr>
+					<tr><td>Phone:</td><td><input type="text" name="phone"></td></tr>
+					<tr align="right"><td></td><td><button type="reset">Reset</button>
+					<input type="submit" name="submit_person" value="Submit"></td></tr>
+				</table>
 			</fieldset>
 		</form>
 	</div>
@@ -130,13 +135,14 @@
 					
 				while ($row = oci_fetch_array($stid, OCI_ASSOC)) {
 					foreach ($row as $id) {
-						echo "<option value=$id>$id</option>"; 
+						echo "<option value=".$id.">$id</option>"; 
 					}
 				}
 			?>
 			</select>
 			<input type="submit" name="search_person" value="Search">
 		</form>
+		
 	<?php
 		searchPerson($conn);
 	?>
@@ -197,7 +203,7 @@
 					
 				while ($row = oci_fetch_array($stid, OCI_ASSOC)) {
 					foreach ($row as $id) {
-						echo "<option value=$id>$id</option>"; 
+						echo "<option value=".$id.">$id</option>"; 
 					}
 				}
 			?>
@@ -215,8 +221,8 @@
 		deleteUser($conn);
 		deletePerson($conn);
 		deleteSensor($conn);
-		updatePerson($conn);		
-		updateUser($conn);
+		updatePerson($conn);
+		updateUser($conn);		
 	?>
 	
 	</span>

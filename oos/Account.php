@@ -26,13 +26,15 @@
                 echo '<br />Username: '.$username.' does not exist.';
             } else {
                 echo '<br /><form action="" method="post">';
-                echo 'Username: <input type="text" name="dis_username" value="'.$username.'" readonly> <br /><br />';
-                echo 'Password: <input type="text" name="edit_password" value="'.$user_password.'"> <br /><br />';
-                echo 'Firstname: <input type="text" name="edit_firstname" value="'.$user_firstname.'"> <br /><br />';
-                echo 'Lastname: <input type="text" name="edit_lastname" value="'.$user_lastname.'"> <br /><br />';
-                echo 'Address: <input type="text" name="edit_address" value="'.$user_address.'"> <br /><br />';
-                echo '<input type="submit" name="modify" value="Modify">';
+				echo '<table class = "_form">';
+                echo '<tr><td>Username:</td><td><input type="text" name="dis_username" value="'.$username.'" readonly></td></tr>';
+                echo '<tr><td>Password:</td><td><input type="text" name="edit_password" value="'.$user_password.'"></td></tr>';
+                echo '<tr><td>Firstname:</td><td><input type="text" name="edit_firstname" value="'.$user_firstname.'"></td></tr>';
+                echo '<tr><td>Lastname:</td><td><input type="text" name="edit_lastname" value="'.$user_lastname.'"></td></tr>';
+                echo '<tr><td>Address:</td><td><input type="text" name="edit_address" value="'.$user_address.'"></td></tr>';
+                echo '<tr><td></td><td align="right"><input type="submit" name="modify" value="Modify"></td></tr>';
                 echo '</form>';
+				echo '</table>';
             }
                     
             // Free the statement identifier when closing the connection
